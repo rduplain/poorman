@@ -34,11 +34,15 @@ declare POORMAN_NAME       # name of command as listed in Procfile
 declare POORMAN_COMMAND    # command-line as listed in Procfile
 declare POORMAN_PAD        # space-filled string to line up stdout logging
 declare POORMAN_LOG_PREFIX # pre-computed log prefix
+declare POORMAN_LOG_COLOR  # ANSI escape sequence for color of current log
 
 # Introspected program installation.
 SCRIPT_DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROGRAM=`basename $0`
 POORMAN=$SCRIPT_DIR/$PROGRAM
+
+# Program count, incremented by 1 on each exec. (Used in rotating colors.)
+PROGRAM_COUNT=0
 
 
 # Begin main functions.
@@ -106,7 +110,7 @@ main_start() {
 log_line() {
     # Log given line to stdout, prefixed with timestamp & program name.
 
-    echo `date +"%H:%M:%S"` "$POORMAN_LOG_PREFIX" $@
+    echo -e "$POORMAN_LOG_COLOR`date +"%H:%M:%S"` $POORMAN_LOG_PREFIX\E[0m" $@
 }
 
 echo_env_export() {
@@ -124,6 +128,8 @@ exec_procfile_line() {
     if [ -z "$POORMAN_COMMAND" ]; then
         return
     fi
+    export POORMAN_LOG_COLOR=`pick_color $PROGRAM_COUNT`
+    let PROGRAM_COUNT=PROGRAM_COUNT+1
     $POORMAN exec "$POORMAN_COMMAND" 2>/dev/null &
 }
 
@@ -209,6 +215,28 @@ build_logging_pad() {
         POORMAN_PAD="$POORMAN_PAD "
     done
     export POORMAN_PAD
+}
+
+pick_color() {
+    # Pick a color from a preset given an integer, echo ANSI escape sequence.
+
+    if [ $# -eq 0 ]; then
+        return
+    fi
+
+    local number=$1
+    shift
+
+    local cyan='\E[36m'
+    local blue='\E[34m'
+    local magenta='\E[35m'
+    local red='\E[31m'
+    local green='\E[32m'
+    local yellow='\E[33m'
+
+    local colors=( $cyan $blue $magenta $red $green $yellow )
+    let index=$number%6
+    echo ${colors[$index]}
 }
 
 usage() {
