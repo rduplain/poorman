@@ -110,7 +110,7 @@ main_start() {
 log_line() {
     # Log given line to stdout, prefixed with timestamp & program name.
 
-    echo -e "$POORMAN_LOG_COLOR`date +"%H:%M:%S"` $POORMAN_LOG_PREFIX\E[0m" $@
+    echo -e "$POORMAN_LOG_COLOR`date +"%H:%M:%S"` $POORMAN_LOG_PREFIX\033[0m" $@
 }
 
 echo_env_export() {
@@ -227,12 +227,12 @@ pick_color() {
     local number=$1
     shift
 
-    local cyan='\E[36m'
-    local blue='\E[34m'
-    local magenta='\E[35m'
-    local red='\E[31m'
-    local green='\E[32m'
-    local yellow='\E[33m'
+    local cyan='\033[36m'
+    local blue='\033[34m'
+    local magenta='\033[35m'
+    local red='\033[31m'
+    local green='\033[32m'
+    local yellow='\033[33m'
 
     local colors=( $cyan $blue $magenta $red $green $yellow )
     let index=$number%6
