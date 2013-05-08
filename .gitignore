@@ -1,0 +1,10 @@
+.#*
+*~
+\#*
+.DS_Store
+/.emacs*
+*.html
+*.log
+__MACOSX
+*.pyc
+*.sw*
