@@ -110,7 +110,8 @@ main_start() {
 log_line() {
     # Log given line to stdout, prefixed with timestamp & program name.
 
-    echo -e "$POORMAN_LOG_COLOR`date +"%H:%M:%S"` $POORMAN_LOG_PREFIX\033[0m" $@
+    colored="$POORMAN_LOG_COLOR`date +"%H:%M:%S"` $POORMAN_LOG_PREFIX\033[0m"
+    echo -e "$colored" "$*"
 }
 
 echo_env_export() {
@@ -182,7 +183,7 @@ map_lines() {
     local count=0
     while read line; do
         IFS="$OLD_IFS"
-        $line_function $line
+        $line_function "$line"
         local result=$?
         IFS="$NEW_IFS"
         if [ $result -ne 0 ]; then
