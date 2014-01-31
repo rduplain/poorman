@@ -76,7 +76,7 @@ main_exec() {
     # Called recursively to `exec` into command & support group killing.
 
     # Load environment from .env file.
-    eval `map_lines echo_env_export < .env`
+    eval "`map_lines echo_env_export < .env`"
     # Expand any shell parameters in the Procfile command.
     local command_line=`eval echo "$@"`
     # Disable pathname expansion to avoid glob expansion in logs.
