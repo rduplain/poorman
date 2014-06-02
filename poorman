@@ -47,11 +47,17 @@ PROGRAM_COUNT=0
 
 # Begin main functions.
 
+kill_group() {
+    # Kill process group.
+
+    # Clear trap, as kill is about to send SIGTERM to self.
+    trap - SIGTERM
+    kill 0
+}
+
+
 main() {
     # User-facing entry point for poorman.
-
-    # Kill process group immediately on receiving a signal.
-    trap 'kill 0' SIGINT SIGTERM EXIT
 
     if [ $# -eq 0 ]; then
         # No arguments given.
@@ -64,6 +70,9 @@ main() {
     if [ "$command" = "exec" ]; then
         main_exec "$@"
     elif [ "$command" = "start" ]; then
+        # Kill process group immediately on receiving a signal.
+        # Do not trap on EXIT, as EXIT trap calls in subshells as of bash 4.3.
+        trap 'kill_group' SIGINT SIGTERM
         main_start "$@"
     else
         usage
