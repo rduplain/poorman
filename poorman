@@ -67,12 +67,12 @@ main() {
     local command=$1
     shift
 
+    # Kill process group immediately on receiving a signal.
+    trap 'kill_group' SIGINT SIGTERM EXIT
+
     if [ "$command" = "exec" ]; then
         main_exec "$@"
     elif [ "$command" = "start" ]; then
-        # Kill process group immediately on receiving a signal.
-        # Do not trap on EXIT, as EXIT trap calls in subshells as of bash 4.3.
-        trap 'kill_group' SIGINT SIGTERM
         main_start "$@"
     else
         usage
