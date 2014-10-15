@@ -127,7 +127,7 @@ echo_env_export() {
     # Print eval-able line, intended for use with .env lines.
 
     if [[ "$@" == *=* ]]; then
-        echo "export $@"
+        echo "export ${@//\\/\\\\}"
     fi
 }
 
