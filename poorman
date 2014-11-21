@@ -160,6 +160,7 @@ log_line() {
     # Log given line to stdout, prefixed with timestamp & program name.
 
     colored="$POORMAN_LOG_COLOR`date +"%H:%M:%S"` $POORMAN_LOG_PREFIX\033[0m"
+    # Evaluate THESE backslashes, but not THOSE backslashes.
     echo -e "$colored" "${*//\\/\\\\}"
 }
 
@@ -167,7 +168,7 @@ echo_env_export() {
     # Print eval-able line, intended for use with .env lines.
 
     if [[ "$@" == *=* ]]; then
-        echo "export ${@//\\/\\\\}"
+        echo "export ${@//\\/\\\\}"  # <---- Look, mountains!
     fi
 }
 
