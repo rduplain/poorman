@@ -55,6 +55,10 @@ kill_group() {
     kill 0
 }
 
+set_trap() {
+    # Kill process group immediately on receiving a signal.
+    trap 'kill_group' SIGINT SIGTERM EXIT
+}
 
 main() {
     # User-facing entry point for poorman.
@@ -67,13 +71,14 @@ main() {
     local command=$1
     shift
 
-    # Kill process group immediately on receiving a signal.
-    trap 'kill_group' SIGINT SIGTERM EXIT
-
     if [ "$command" = "exec" ]; then
+        set_trap
         main_exec "$@"
     elif [ "$command" = "start" ]; then
+        set_trap
         main_start "$@"
+    elif [ "$command" = "source" ]; then
+        pass
     else
         usage
     fi
@@ -203,6 +208,11 @@ map_lines() {
     IFS="$OLD_IFS"
 }
 
+pass() {
+    # No operation.
+
+    :
+}
 
 # Begin top-level program utilities.
 
