@@ -15,6 +15,14 @@ double_line() {
     echo "$@ $@"
 }
 
+fail_on_two() {
+    if [ "$@" = "two" ]; then
+        return 1
+    else
+        echo "$@"
+    fi
+}
+
 @test "pass: smoke test" {
     run pass
     [ $status -eq 0 ]
@@ -45,4 +53,21 @@ double_line() {
         assert_equal "line 2" "two two" "${lines[1]}"
         assert_equal "line 3" "three three" "${lines[2]}"
     }
+}
+
+@test "map_lines: failure stops execution" {
+    fn() {
+        print_three_lines | map_lines fail_on_two
+    }
+    run fn
+    assert_equal "number of lines" 1 ${#lines[@]}
+    assert_equal "line 1" "one" "${lines[0]}"
+}
+
+@test "map_lines: failure propagates status code" {
+    fn() {
+        print_three_lines | map_lines fail_on_two
+    }
+    run fn
+    [ $status -eq 1 ]
 }
