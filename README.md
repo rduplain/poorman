@@ -18,3 +18,9 @@ To test poorman, run `make test`.
  * http://ddollar.github.io/foreman/
  * http://blog.daviddollar.org/2011/05/06/introducing-foreman.html
  * https://devcenter.heroku.com/articles/procfile
+
+### Test Coverage Report
+
+Install the `bashcov` ruby gem, run `bashcov make test`, then open
+`coverage/index.html` to view the report (tested with bashcov 1.0.1 on ruby
+2.2.0).

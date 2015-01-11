@@ -1,6 +1,8 @@
 .#*
 *~
 \#*
+/.coverage
+/coverage/
 .DS_Store
 /.emacs*
 *.html
