@@ -1,5 +1,12 @@
 ## poorman: shell port of foreman for Procfile and .env.
 
+### Usage
+
+To install, put `poorman` in `$PATH`, then run `poorman start` in a directory
+with a Procfile (and optionally a .env file).
+
+To test poorman, run `make test`.
+
 ### Motivation
 
  1. Ensure managed processes actually die on exit.
