@@ -6,5 +6,6 @@
 *.html
 *.log
 __MACOSX
+/opt/
 *.pyc
 *.sw*
