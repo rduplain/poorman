@@ -36,6 +36,12 @@ declare POORMAN_PAD        # space-filled string to line up stdout logging
 declare POORMAN_LOG_PREFIX # pre-computed log prefix
 declare POORMAN_LOG_COLOR  # ANSI escape sequence for color of current log
 
+declare -A POORMAN_PIDS    # array of PIDs of poorman-spawned processes
+
+# When this is not-empty, poorman will kill only poorman-spawned processes.
+# This is specifically useful when poorman's caller is in the same process group.
+export POORMAN_SELECTIVE_KILL=${POORMAN_SELECTIVE_KILL:-}
+
 export PROGRAM=`basename $0`
 export POORMAN=$0
 
@@ -107,7 +113,23 @@ clear_trap() {
 kill_processes() {
     # Kill all processes in process group.
 
-    kill 0
+    if [ -z "$POORMAN_SELECTIVE_KILL" ]; then
+        kill 0
+    else
+        for pid in "${POORMAN_PIDS[@]}"; do
+            kill $pid >/dev/null 2>&1
+        done
+    fi
+}
+
+add_pid() {
+    # Add given pid to POORMAN_PIDS.
+
+    local pid=$1
+    shift
+
+    local index=${#POORMAN_PIDS[@]}
+    POORMAN_PIDS[$index]=$pid
 }
 
 execute_command() {
@@ -126,6 +148,7 @@ execute_command() {
     local log_prefix="$POORMAN_NAME${POORMAN_PAD:0:$filler_length}|"
     # Execute the command, logging each line with timestamp & program name.
     $command_line 2>&1 | POORMAN_LOG_PREFIX="$log_prefix" map_lines log_line &
+    add_pid $!
 }
 
 # Begin per-line utilities, called with each line of file or output.
