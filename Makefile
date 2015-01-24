@@ -5,6 +5,9 @@ all: test
 test: bats-command
 	@$(BATS) test/*.bats
 
+run:
+	@./poorman start
+
 clean: clean-bats
 
 .PHONY: test

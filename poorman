@@ -25,40 +25,24 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-
 # Exit immediately if a command error or non-zero return occurs.
 set -e
 
-# Environment variables for use in recursive calls to poorman.
+# Environment variables during poorman's run time.
+declare POORMAN            # filepath for this instance of poorman
 declare POORMAN_NAME       # name of command as listed in Procfile
 declare POORMAN_COMMAND    # command-line as listed in Procfile
 declare POORMAN_PAD        # space-filled string to line up stdout logging
 declare POORMAN_LOG_PREFIX # pre-computed log prefix
 declare POORMAN_LOG_COLOR  # ANSI escape sequence for color of current log
 
-# Introspected program installation.
-SCRIPT_DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PROGRAM=`basename $0`
-POORMAN=$SCRIPT_DIR/$PROGRAM
+export PROGRAM=`basename $0`
+export POORMAN=$0
 
 # Program count, incremented by 1 on each exec. (Used in rotating colors.)
 PROGRAM_COUNT=0
 
-
 # Begin main functions.
-
-kill_group() {
-    # Kill process group.
-
-    # Clear trap, as kill is about to send SIGTERM to self.
-    trap - SIGTERM
-    kill 0
-}
-
-set_trap() {
-    # Kill process group immediately on receiving a signal.
-    trap 'kill_group' SIGINT SIGTERM EXIT
-}
 
 main() {
     # User-facing entry point for poorman.
@@ -71,41 +55,31 @@ main() {
     local command=$1
     shift
 
-    if [ "$command" = "exec" ]; then
-        set_trap
-        main_exec "$@"
-    elif [ "$command" = "start" ]; then
+    if [ "$command" = "start" ]; then
         set_trap
         main_start "$@"
     elif [ "$command" = "source" ]; then
         pass
     else
+        echo "error: no such command: $command" >&2
+        echo >&2
         usage
     fi
 }
 
-main_exec() {
-    # Load .env & execute given command, logging each line w/metadata prefix.
-    #
-    # Called recursively to `exec` into command & support group killing.
-
-    # Load environment from .env file.
-    eval "`map_lines echo_env_export < .env`"
-    # Expand any shell parameters in the Procfile command.
-    local command_line=`eval echo "$@"`
-    # Disable pathname expansion to avoid glob expansion in logs.
-    set -f
-    # Compute the logging prefix to line up stdout among processes.
-    local pad_length=${#POORMAN_PAD}
-    local name_length=${#POORMAN_NAME}
-    let filler_length=pad_length-name_length+1
-    export POORMAN_LOG_PREFIX="$POORMAN_NAME${POORMAN_PAD:0:$filler_length}|"
-    # Execute the command, logging each line with timestamp & program name.
-    exec $command_line 2>&1 | map_lines log_line
-}
-
 main_start() {
     # Load Procfile & execute each command found, after pruning out comments.
+
+    if [ ! -e Procfile ]; then
+        echo "error: Procfile does not exist" >&2
+        echo >&2
+        usage
+    fi
+
+    # Load environment from .env file.
+    if [ -e .env ]; then
+        eval "`map_lines echo_env_export < .env`"
+    fi
 
     # Load the Procfile, parse it, and execute the commands found there.
     build_logging_pad
@@ -114,10 +88,45 @@ main_start() {
     # Clean up environment in case anything wants to use it.
     export POORMAN_NAME=$PROGRAM
     unset POORMAN_COMMAND
-    # Wait for children programs to exit.
+
     wait
 }
 
+set_trap() {
+    # Kill process group immediately on receiving a signal.
+
+    trap 'kill_processes' SIGINT SIGTERM EXIT
+}
+
+clear_trap() {
+    # Clear traps from `set_trap`.
+
+    trap - SIGINT SIGTERM EXIT
+}
+
+kill_processes() {
+    # Kill all processes in process group.
+
+    kill 0
+}
+
+execute_command() {
+    # Load .env & execute given command, logging each line w/metadata prefix.
+    #
+    # Called recursively to `exec` into command & support group killing.
+
+    # Expand any shell parameters in the Procfile command.
+    local command_line=`eval echo "$@"`
+    # Disable pathname expansion to avoid glob expansion in logs.
+    set -f
+    # Compute the logging prefix to line up stdout among processes.
+    local pad_length=${#POORMAN_PAD}
+    local name_length=${#POORMAN_NAME}
+    let filler_length=pad_length-name_length+1
+    local log_prefix="$POORMAN_NAME${POORMAN_PAD:0:$filler_length}|"
+    # Execute the command, logging each line with timestamp & program name.
+    $command_line 2>&1 | POORMAN_LOG_PREFIX="$log_prefix" map_lines log_line &
+}
 
 # Begin per-line utilities, called with each line of file or output.
 
@@ -145,7 +154,7 @@ exec_procfile_line() {
     fi
     export POORMAN_LOG_COLOR=`pick_color $PROGRAM_COUNT`
     let PROGRAM_COUNT=PROGRAM_COUNT+1
-    $POORMAN exec "$POORMAN_COMMAND" 2>/dev/null &
+    execute_command "$POORMAN_COMMAND"
 }
 
 echo_procfile_name() {
@@ -171,7 +180,6 @@ parse_procfile_line() {
     export POORMAN_NAME=${line%%:*}    # everything up to first ':'
     export POORMAN_COMMAND=${line#*: } # everything after first ':'
 }
-
 
 # Begin map utility to process lines in text using manageable functions.
 
@@ -261,11 +269,12 @@ pick_color() {
 usage() {
     # Print poorman program usage to stderr & return 2.
 
-    exec >&2 # Redirect all further stdout to stderr.
-    echo "usage: $PROGRAM start"
-    echo
-    echo "$PROGRAM is a shell port of foreman, and"
-    echo "reads Procfile and .env in the current working directory."
+    clear_trap
+
+    echo "usage: $PROGRAM start" >&2
+    echo >&2
+    echo "$PROGRAM is a shell port of foreman, and" >&2
+    echo "reads Procfile and .env in the current working directory." >&2
     return 2
 }
 
