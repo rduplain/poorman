@@ -1,0 +1,11 @@
+language: bash
+before_install:
+  - gem install bashcov
+script:
+  - bashcov make test
+cache:
+  directories:
+  - opt
+notifications:
+  email:
+    on_success: never
