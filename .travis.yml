@@ -1,6 +1,9 @@
 language: bash
 before_install:
-  - gem install bashcov
+  # Use bashcov fork which has compatible simplecov dependency with coveralls.
+  - gem install coveralls
+  - git clone https://github.com/rduplain/bashcov.git && cd bashcov && gem build bashcov.gemspec && gem install *.gem
+  - cd $TRAVIS_BUILD_DIR
 script:
   - bashcov make test
 cache:
