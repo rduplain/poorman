@@ -10,4 +10,10 @@ poorman_path() {
     echo $filepath
 }
 
-. `poorman_path` source
+if [ "$1" = "source" ]; then
+    # Source this file, to get utility function.
+    :;
+else
+    # Load this file, source poorman functions as a test helper.
+    . `poorman_path` source
+fi

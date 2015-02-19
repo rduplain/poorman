@@ -1,11 +1,6 @@
 fixture() {
     export FIXTURE_ROOT="$BATS_TEST_DIRNAME/fixture/$1"
-}
-
-setup() {
-    if [ -n "$FIXTURE_ROOT" ]; then
-        cd $FIXTURE_ROOT
-    fi
+    cd $FIXTURE_ROOT
 }
 
 assert_equal() {
