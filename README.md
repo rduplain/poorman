@@ -26,7 +26,7 @@ To test poorman, run `make test`.
 ### Test Coverage Report
 
 Install the `bashcov` ruby gem, run `bashcov make test`, then open
-`coverage/index.html` to view the report (tested with bashcov 1.0.1 on ruby
+`coverage/index.html` to view the report (tested with bashcov 1.1.0 on ruby
 2.2.0).
 
 
