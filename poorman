@@ -113,9 +113,9 @@ clear_trap() {
 kill_processes() {
     # Kill all processes in process group.
 
-    if [ -z "$POORMAN_SELECTIVE_KILL" ]; then
-        kill 0
-    else
+    [[ -z "$POORMAN_SELECTIVE_KILL" ]] && kill 0
+
+    if [ -n "$POORMAN_SELECTIVE_KILL" ]; then
         for pid in "${POORMAN_PIDS[@]}"; do
             kill $pid >/dev/null 2>&1
         done

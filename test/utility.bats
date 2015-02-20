@@ -25,7 +25,7 @@ fail_on_two() {
 
 @test "pass: smoke test" {
     run pass
-    [ $status -eq 0 ]
+    assert_equal "exit code" "0" "$status"
 }
 
 @test "map_lines: one line" {
@@ -69,5 +69,17 @@ fail_on_two() {
         print_three_lines | map_lines fail_on_two
     }
     run fn
-    [ $status -eq 1 ]
+    assert_equal "exit code" "1" "$status"
+}
+
+@test "pick_color: fail gracefully when no argument" {
+    run pick_color
+    assert_equal "output" "" "$output"
+    assert_equal "exit code" "0" "$status"
+}
+
+@test "pick_color: sample a color" {
+    run pick_color 2
+    assert_equal "output" "\033[31m" "$output"
+    assert_equal "exit code" "0" "$status"
 }

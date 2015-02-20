@@ -17,6 +17,7 @@ load poorman
 }
 
 @test "poorman: invocation without Procfile prints usage" {
+    fixture empty
     assert_does_not_exist "local Procfile does not exist when testing" Procfile
     run_poorman start
     assert_equal "error line" "error: Procfile does not exist" "${lines[0]}"
@@ -64,4 +65,18 @@ load poorman
     assert_equal "line 7" "one   | xxx" "${lines[6]}"
     assert_equal "line 8" "two   | xxx" "${lines[7]}"
     assert_equal "line 9" "three | xxx" "${lines[8]}"
+}
+
+@test "poorman: basic Procfile with .env, both with additional empty lines" {
+    fixture basic_env_with_empty_lines
+    run_poorman_filtered_without_timestamps start
+    assert_equal "line 1" "one   | -" "${lines[0]}"
+    assert_equal "line 2" "two   | -" "${lines[1]}"
+    assert_equal "line 3" "three | -" "${lines[2]}"
+    assert_equal "line 4" "one   | --" "${lines[3]}"
+    assert_equal "line 5" "two   | --" "${lines[4]}"
+    assert_equal "line 6" "three | --" "${lines[5]}"
+    assert_equal "line 7" "one   | ---" "${lines[6]}"
+    assert_equal "line 8" "two   | ---" "${lines[7]}"
+    assert_equal "line 9" "three | ---" "${lines[8]}"
 }
