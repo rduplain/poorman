@@ -11,6 +11,12 @@ three
 EOF
 }
 
+print_two_lines_then_fail() {
+    echo one
+    echo two
+    return 1
+}
+
 double_line() {
     echo "$@ $@"
 }
@@ -55,7 +61,7 @@ fail_on_two() {
     }
 }
 
-@test "map_lines: failure stops execution" {
+@test "map_lines: failure of line function stops execution" {
     fn() {
         print_three_lines | map_lines fail_on_two
     }
@@ -64,9 +70,17 @@ fail_on_two() {
     assert_equal "line 1" "one" "${lines[0]}"
 }
 
-@test "map_lines: failure propagates status code" {
+@test "map_lines: failure of line function propagates status code" {
     fn() {
         print_three_lines | map_lines fail_on_two
+    }
+    run fn
+    assert_equal "exit code" "1" "$status"
+}
+
+@test "map_lines: failure of mapped function propagates status code" {
+    fn() {
+        print_two_lines_then_fail | map_lines double_line
     }
     run fn
     assert_equal "exit code" "1" "$status"
