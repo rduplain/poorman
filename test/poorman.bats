@@ -80,3 +80,11 @@ load poorman
     assert_equal "line 8" "two   | ---" "${lines[7]}"
     assert_equal "line 9" "three | ---" "${lines[8]}"
 }
+
+@test "poorman: basic Procfile with early failure of one process" {
+    fixture basic_with_early_failure
+    run_poorman_filtered_without_timestamps start
+    assert_equal "number of lines" 2 ${#lines[@]}
+    assert_equal "line 1" "emo    | I am happy." "${lines[0]}"
+    assert_equal "line 2" "menace | I fail you." "${lines[1]}"
+}

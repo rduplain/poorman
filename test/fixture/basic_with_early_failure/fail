@@ -1,0 +1,6 @@
+#!/bin/bash
+# Fail after a short delay. See comments in ../common/tick.
+
+sleep 0.1
+echo "I fail you." >&2
+exit 1
