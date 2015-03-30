@@ -36,7 +36,7 @@ declare POORMAN_PAD        # space-filled string to line up stdout logging
 declare POORMAN_LOG_PREFIX # pre-computed log prefix
 declare POORMAN_LOG_COLOR  # ANSI escape sequence for color of current log
 
-declare -A POORMAN_PIDS    # array of PIDs of poorman-spawned processes
+declare -a POORMAN_PIDS    # array of PIDs of poorman-spawned processes
 
 # When this is not-empty, poorman will kill only poorman-spawned processes.
 # This is specifically useful when poorman's caller is in the same process group.
