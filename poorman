@@ -27,6 +27,7 @@
 
 # Exit immediately if a command error or non-zero return occurs.
 set -e
+set -o pipefail
 
 # Environment variables during poorman's run time.
 declare POORMAN            # filepath for this instance of poorman
