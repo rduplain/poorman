@@ -160,14 +160,15 @@ log_line() {
     # Log given line to stdout, prefixed with timestamp & program name.
 
     colored="$POORMAN_LOG_COLOR`date +"%H:%M:%S"` $POORMAN_LOG_PREFIX\033[0m"
-    echo -e "$colored" "$*"
+    # Evaluate THESE backslashes, but not THOSE backslashes.
+    echo -e "$colored" "${*//\\/\\\\}"
 }
 
 echo_env_export() {
     # Print eval-able line, intended for use with .env lines.
 
     if [[ "$@" == *=* ]]; then
-        echo "export $@"
+        echo "export ${@//\\/\\\\}"  # <---- Look, mountains!
     fi
 }
 
@@ -232,7 +233,7 @@ map_lines() {
 
     IFS="$NEW_IFS"
     local count=0
-    while read line; do
+    while read -r line; do
         IFS="$OLD_IFS"
         $line_function "$line"
         local result=$?
