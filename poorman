@@ -83,7 +83,7 @@ main() {
 trap_during_setup() {
     # Set trap intended for poorman during initialization.
 
-    [[ -n "$POORMAN_SELECTIVE_KILL" ]] || trap 'kill 0' SIGINT SIGTERM EXIT
+    [[ -n "$POORMAN_SELECTIVE_KILL" ]] || trap 'clear_traps; kill 0' SIGINT SIGTERM EXIT
 }
 
 clear_traps() {
@@ -115,7 +115,7 @@ main_start() {
     unset POORMAN_COMMAND
 
     # Set trap in a single line to simplify coverage.
-    [[ -n "$POORMAN_SELECTIVE_KILL" ]] && trap 'kill ${POORMAN_PIDS[@]} >/dev/null 2>&1' SIGINT SIGTERM EXIT || trap 'kill 0' SIGINT SIGTERM EXIT
+    [[ -n "$POORMAN_SELECTIVE_KILL" ]] && trap 'clear_traps; kill ${POORMAN_PIDS[@]} >/dev/null 2>&1' SIGINT SIGTERM EXIT || trap 'clear_traps; kill 0' SIGINT SIGTERM EXIT
 
     wait
 }
@@ -139,7 +139,7 @@ main_exec() {
 
     # Set trap in a single line to simplify coverage.
     export NEXT_OF_KIN="$POORMAN_PID $POORMAN_LOGGER_PID"
-    [[ -n "$POORMAN_SELECTIVE_KILL" ]] && trap 'kill $NEXT_OF_KIN >/dev/null 2>&1' SIGINT SIGTERM EXIT || trap 'kill 0' SIGINT SIGTERM EXIT
+    [[ -n "$POORMAN_SELECTIVE_KILL" ]] && trap 'clear_traps; kill $NEXT_OF_KIN >/dev/null 2>&1' SIGINT SIGTERM EXIT || trap 'clear_traps; kill 0' SIGINT SIGTERM EXIT
 
     wait
 }
