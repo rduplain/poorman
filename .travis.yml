@@ -1,5 +1,7 @@
 language: bash
 before_install:
+  - bash --version
+  - gem --version
   - gem install coveralls
   - gem install bashcov
   - cd $TRAVIS_BUILD_DIR
