@@ -29,6 +29,12 @@ Install the `bashcov` ruby gem, run `bashcov make test`, then open
 `coverage/index.html` to view the report (tested with bashcov 1.1.0 on ruby
 2.2.0).
 
+### Static Checking in Shell
+
+[ShellCheck](http://www.shellcheck.net/) is a static checker (i.e. linter) for
+shell programs. It is available on Ubuntu/Debian via `sudo apt-get install
+shellcheck` since Ubuntu 14.04.
+
 
 [build]: https://travis-ci.org/rduplain/poorman.svg?branch=master
 [coverage]: https://coveralls.io/repos/rduplain/poorman/badge.svg?branch=master
