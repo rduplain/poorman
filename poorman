@@ -37,6 +37,8 @@ declare POORMAN_PAD        # space-filled string to line up stdout logging
 declare POORMAN_LOG_PREFIX # pre-computed log prefix
 declare POORMAN_LOG_COLOR  # ANSI escape sequence for color of current log
 
+declare POORMAN_PID        # PID of start poorman process from `poorman start`
+declare POORMAN_LOGGER_PID # PID of logger poorman process in `poorman exec`
 declare -a POORMAN_PIDS    # array of PIDs of poorman-spawned processes
 
 # When this is not-empty, poorman will kill only poorman-spawned processes.
@@ -63,8 +65,12 @@ main() {
     shift
 
     if [ "$command" = "start" ]; then
-        set_trap
+        export POORMAN_PID=$$
+        trap_during_setup
         main_start "$@"
+    elif [ "$command" = "exec" ]; then
+        trap_during_setup
+        main_exec "$@"
     elif [ "$command" = "source" ]; then
         pass
     else
@@ -72,6 +78,18 @@ main() {
         echo >&2
         usage
     fi
+}
+
+trap_during_setup() {
+    # Set trap intended for poorman during initialization.
+
+    [[ -n "$POORMAN_SELECTIVE_KILL" ]] || trap 'kill 0' SIGINT SIGTERM EXIT
+}
+
+clear_traps() {
+    # Call all traps known to be set by poorman.
+
+    trap - SIGINT SIGTERM EXIT
 }
 
 main_start() {
@@ -96,47 +114,14 @@ main_start() {
     export POORMAN_NAME=$PROGRAM
     unset POORMAN_COMMAND
 
+    # Set trap in a single line to simplify coverage.
+    [[ -n "$POORMAN_SELECTIVE_KILL" ]] && trap 'kill ${POORMAN_PIDS[@]} >/dev/null 2>&1' SIGINT SIGTERM EXIT || trap 'kill 0' SIGINT SIGTERM EXIT
+
     wait
 }
 
-set_trap() {
-    # Kill process group immediately on receiving a signal.
-
-    trap 'kill_processes' SIGINT SIGTERM EXIT
-}
-
-clear_trap() {
-    # Clear traps from `set_trap`.
-
-    trap - SIGINT SIGTERM EXIT
-}
-
-kill_processes() {
-    # Kill all processes in process group.
-
-    [[ -z "$POORMAN_SELECTIVE_KILL" ]] && kill 0
-
-    if [ -n "$POORMAN_SELECTIVE_KILL" ]; then
-        for pid in "${POORMAN_PIDS[@]}"; do
-            kill $pid >/dev/null 2>&1
-        done
-    fi
-}
-
-add_pid() {
-    # Add given pid to POORMAN_PIDS.
-
-    local pid=$1
-    shift
-
-    local index=${#POORMAN_PIDS[@]}
-    POORMAN_PIDS[$index]=$pid
-}
-
-execute_command() {
+main_exec() {
     # Load .env & execute given command, logging each line w/metadata prefix.
-    #
-    # Called recursively to `exec` into command & support group killing.
 
     # Expand any shell parameters in the Procfile command.
     local command_line=`eval echo "$@"`
@@ -148,8 +133,25 @@ execute_command() {
     let filler_length=pad_length-name_length+1
     local log_prefix="$POORMAN_NAME${POORMAN_PAD:0:$filler_length}|"
     # Execute the command, logging each line with timestamp & program name.
-    $command_line 2>&1 | POORMAN_LOG_PREFIX="$log_prefix" map_lines log_line &
-    add_pid $!
+    export POORMAN_LOG_PREFIX="$log_prefix"
+    exec $command_line 2>&1 | map_lines log_line &
+    export POORMAN_LOGGER_PID=$!
+
+    # Set trap in a single line to simplify coverage.
+    export NEXT_OF_KIN="$POORMAN_PID $POORMAN_LOGGER_PID"
+    [[ -n "$POORMAN_SELECTIVE_KILL" ]] && trap 'kill $NEXT_OF_KIN >/dev/null 2>&1' SIGINT SIGTERM EXIT || trap 'kill 0' SIGINT SIGTERM EXIT
+
+    wait
+}
+
+add_pid() {
+    # Add given pid to POORMAN_PIDS, should only be called from main process.
+
+    local pid=$1
+    shift
+
+    local index=${#POORMAN_PIDS[@]}
+    POORMAN_PIDS[$index]=$pid
 }
 
 # Begin per-line utilities, called with each line of file or output.
@@ -171,6 +173,8 @@ echo_env_export() {
 
 exec_procfile_line() {
     # Parse & exec Procfile-style line, intended for use with Procfile lines.
+    #
+    # Calls poorman recursively to `exec` into command & support killing group.
 
     parse_procfile_line "$@"
     if [ -z "$POORMAN_COMMAND" ]; then
@@ -178,7 +182,8 @@ exec_procfile_line() {
     fi
     export POORMAN_LOG_COLOR=`pick_color $PROGRAM_COUNT`
     let PROGRAM_COUNT=PROGRAM_COUNT+1
-    execute_command "$POORMAN_COMMAND"
+    $POORMAN exec "$POORMAN_COMMAND" 2>/dev/null &
+    add_pid $!
 }
 
 echo_procfile_name() {
@@ -293,7 +298,7 @@ pick_color() {
 usage() {
     # Print poorman program usage to stderr & return 2.
 
-    clear_trap
+    clear_traps
 
     echo "usage: $PROGRAM start" >&2
     echo >&2
