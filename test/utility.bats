@@ -11,6 +11,12 @@ three
 EOF
 }
 
+print_three_lines_without_final_newline() {
+    echo one
+    echo two
+    echo -n three
+}
+
 print_two_lines_then_fail() {
     echo one
     echo two
@@ -45,14 +51,24 @@ fail_on_two() {
 @test "map_lines: one line without newline" {
     echo -n one | map_lines double_line | {
         run cat
-        assert_equal "number of lines" 0 ${#lines[@]}
-        assert_equal "line 1" "" "${lines[0]}"
-        assert_equal "output" "" "$output"
+        assert_equal "number of lines" 1 ${#lines[@]}
+        assert_equal "line 1" "one one" "${lines[0]}"
+        assert_equal "output" "one one" "$output"
     }
 }
 
 @test "map_lines: three lines" {
     print_three_lines | map_lines double_line | {
+        run cat
+        assert_equal "number of lines" 3 ${#lines[@]}
+        assert_equal "line 1" "one one" "${lines[0]}"
+        assert_equal "line 2" "two two" "${lines[1]}"
+        assert_equal "line 3" "three three" "${lines[2]}"
+    }
+}
+
+@test "map_lines: three lines without final newline" {
+    print_three_lines_without_final_newline | map_lines double_line | {
         run cat
         assert_equal "number of lines" 3 ${#lines[@]}
         assert_equal "line 1" "one one" "${lines[0]}"

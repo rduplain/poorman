@@ -81,6 +81,34 @@ load poorman
     assert_equal "line 9" "three | ---" "${lines[8]}"
 }
 
+@test "poorman: basic Procfile missing newline" {
+    fixture basic_missing_newline
+    run_poorman_filtered_without_timestamps start
+    assert_equal "line 1" "one   | ." "${lines[0]}"
+    assert_equal "line 2" "two   | ." "${lines[1]}"
+    assert_equal "line 3" "three | ." "${lines[2]}"
+    assert_equal "line 4" "one   | .." "${lines[3]}"
+    assert_equal "line 5" "two   | .." "${lines[4]}"
+    assert_equal "line 6" "three | .." "${lines[5]}"
+    assert_equal "line 7" "one   | ..." "${lines[6]}"
+    assert_equal "line 8" "two   | ..." "${lines[7]}"
+    assert_equal "line 9" "three | ..." "${lines[8]}"
+}
+
+@test "poorman: basic Procfile with .env missing newline" {
+    fixture basic_env_missing_newline
+    run_poorman_filtered_without_timestamps start
+    assert_equal "line 1" "one   | +" "${lines[0]}"
+    assert_equal "line 2" "two   | +" "${lines[1]}"
+    assert_equal "line 3" "three | +" "${lines[2]}"
+    assert_equal "line 4" "one   | ++" "${lines[3]}"
+    assert_equal "line 5" "two   | ++" "${lines[4]}"
+    assert_equal "line 6" "three | ++" "${lines[5]}"
+    assert_equal "line 7" "one   | +++" "${lines[6]}"
+    assert_equal "line 8" "two   | +++" "${lines[7]}"
+    assert_equal "line 9" "three | +++" "${lines[8]}"
+}
+
 @test "poorman: basic Procfile with early failure of one process" {
     fixture basic_with_early_failure
     run_poorman_filtered_without_timestamps start
