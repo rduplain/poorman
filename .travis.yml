@@ -6,7 +6,7 @@ before_install:
   - gem install bashcov
   - cd $TRAVIS_BUILD_DIR
 script:
-  - bashcov make test
+  - make coverage
 cache:
   directories:
   - opt
