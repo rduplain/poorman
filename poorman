@@ -45,7 +45,7 @@ declare -a POORMAN_PIDS    # array of PIDs of poorman-spawned processes
 # This is specifically useful when poorman's caller is in the same process group.
 export POORMAN_SELECTIVE_KILL=${POORMAN_SELECTIVE_KILL:-}
 
-export PROGRAM=`basename $0`
+export PROGRAM=${0##*/} # same as basename
 export POORMAN=$0
 
 # Program count, incremented by 1 on each exec. (Used in rotating colors.)
