@@ -105,7 +105,7 @@ main_start() {
 
     # Load environment from .env file.
     if [ -e .env ]; then
-        eval "`map_lines echo_env_export < .env`"
+        eval "$(map_lines echo_env_export < .env)"
     fi
 
     # Load the Procfile, parse it, and execute the commands found there.
@@ -161,7 +161,7 @@ add_pid() {
 log_line() {
     # Log given line to stdout, prefixed with timestamp & program name.
 
-    colored="$POORMAN_LOG_COLOR`date +"%H:%M:%S"` $POORMAN_LOG_PREFIX\033[0m"
+    colored="$POORMAN_LOG_COLOR$(date +"%H:%M:%S") $POORMAN_LOG_PREFIX\033[0m"
     echo -e "$colored" "${*//\\/\\\\}" # <--- Look, mountains! ---
 }
 
@@ -182,7 +182,7 @@ exec_procfile_line() {
     if [ -z "$POORMAN_COMMAND" ]; then
         return
     fi
-    export POORMAN_LOG_COLOR=`pick_color $PROGRAM_COUNT`
+    export POORMAN_LOG_COLOR=$(pick_color $PROGRAM_COUNT)
     let PROGRAM_COUNT=PROGRAM_COUNT+1
     $POORMAN exec "$POORMAN_COMMAND" 2>/dev/null &
     add_pid $!
@@ -236,7 +236,6 @@ map_lines() {
         return 2
     fi
 
-    local count=0
     while IFS= read -r line || [ -n "$line" ]; do
         $line_command "$line"
         local result=$?
@@ -262,7 +261,7 @@ build_logging_pad() {
 
     # Find the maximum length name in the Procfile.
     local length=0
-    for name in `map_lines echo_procfile_name < Procfile`; do
+    for name in $(map_lines echo_procfile_name < Procfile); do
         if [ ${#name} -gt $length ]; then
             length=${#name}
         fi
