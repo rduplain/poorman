@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # poorman: shell port of foreman process management using Procfile and .env.
 #
 # Copyright (c) 2013-2015, Ron DuPlain <ron.duplain@gmail.com>

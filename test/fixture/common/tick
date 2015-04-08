@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # tick: echo . .. ... with an initial delay, change . with $DOT.
 #
 # This allows Procfile testing with predictable output, assuming that shell

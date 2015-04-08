@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Fail after a short delay. See comments in ../common/tick.
 
 sleep 0.1
