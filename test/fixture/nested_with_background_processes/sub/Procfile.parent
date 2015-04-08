@@ -1,0 +1,3 @@
+a: ./sub/sub.sh
+b: ./sub/sub.sh
+c: ./sub/sub.sh
