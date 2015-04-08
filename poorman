@@ -74,6 +74,7 @@ main() {
         trap_during_setup
         main_exec "$@"
     elif [ "$command" = "source" ]; then
+        unset POORMAN PROGRAM # These are incorrect when poorman is sourced.
         pass
     else
         echo "error: no such command: $command" >&2
