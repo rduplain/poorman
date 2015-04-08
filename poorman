@@ -124,7 +124,7 @@ main_exec() {
     # Load .env & execute given command, logging each line w/metadata prefix.
 
     # Expand any shell parameters in the Procfile command.
-    local command_line=`eval echo "$@"`
+    local command_line=$(eval echo "${@//\\/\\\\}")
     # Disable pathname expansion to avoid glob expansion in logs.
     set -f
     # Compute the logging prefix to line up stdout among processes.
