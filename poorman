@@ -214,35 +214,29 @@ parse_procfile_line() {
 
 map_lines() {
     # Execute <first_argument> for each line in stdin.
-    #
-    # map_lines function forked from the nixd project.
 
-    # Understanding the internal field separator (IFS) in bash:
+    # Understanding read & internal field separator (IFS) in bash:
     #
-    # The IFS is used in word splitting. To split across lines in a string, a
-    # for-loop can simply iterate across that string with IFS set to the
-    # newline character. IFS must be restored to support normal operation of
-    # any further commands.
+    # The `read` builtin reads one line of stdin and assigns words to given
+    # names. Setting the internal field separator (IFS) to an empty value
+    # prevents `read` from trimming whitespace from the line. Using `read -r`
+    # considers a backslash as part of the input line and not an escape. Per
+    # POSIX, `read` exits non-zero if an end-of-file occurs, which would happen
+    # if input ends with a line that does not end with a newline, in which case
+    # bash still assigns the value to the given name when exiting non-zero.
 
     local line_function=$1
     shift
 
-    local OLD_IFS="$IFS"
-    local NEW_IFS=$'\n' # Specifying ANSI escaped char requires $'string' form.
-
-    IFS="$NEW_IFS"
     local count=0
-    while read line; do
-        IFS="$OLD_IFS"
+    while IFS= read -r line || [ -n "$line" ]; do
         $line_function "$line"
         local result=$?
-        IFS="$NEW_IFS"
         if [ $result -ne 0 ]; then
             # Ensure errors do not get swallowed in this loop.
             return $result
         fi
     done
-    IFS="$OLD_IFS"
 }
 
 pass() {
