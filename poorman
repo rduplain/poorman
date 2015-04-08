@@ -168,7 +168,8 @@ log_line() {
 echo_env_export() {
     # Print eval-able line, intended for use with .env lines.
 
-    if [[ "$@" == *=* ]]; then
+    line=${line%%\#*} # Strip out comments.
+    if [[ "$line" == *=* ]]; then
         echo "export ${@//\\/\\\\}" # <--- Look, mountains! ---
     fi
 }

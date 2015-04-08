@@ -81,6 +81,20 @@ load poorman
     assert_equal "line 9" "three | ---" "${lines[8]}"
 }
 
+@test "poorman: basic Procfile with .env with '=' in a comment" {
+    fixture basic_env_with_commented_assignment
+    run_poorman_filtered_without_timestamps start
+    assert_equal "line 1" "one   | v" "${lines[0]}"
+    assert_equal "line 2" "two   | v" "${lines[1]}"
+    assert_equal "line 3" "three | v" "${lines[2]}"
+    assert_equal "line 4" "one   | vv" "${lines[3]}"
+    assert_equal "line 5" "two   | vv" "${lines[4]}"
+    assert_equal "line 6" "three | vv" "${lines[5]}"
+    assert_equal "line 7" "one   | vvv" "${lines[6]}"
+    assert_equal "line 8" "two   | vvv" "${lines[7]}"
+    assert_equal "line 9" "three | vvv" "${lines[8]}"
+}
+
 @test "poorman: basic Procfile missing newline" {
     fixture basic_missing_newline
     run_poorman_filtered_without_timestamps start
