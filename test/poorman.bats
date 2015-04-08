@@ -116,3 +116,17 @@ load poorman
     assert_equal "line 1" "emo    | I am happy." "${lines[0]}"
     assert_equal "line 2" "menace | I fail you." "${lines[1]}"
 }
+
+@test "poorman: Procfile with a backslash" {
+    fixture backslash_procfile
+    run_poorman_filtered_without_timestamps start
+    assert_equal "number of lines" 1 ${#lines[@]}
+    assert_equal "line 1" "test | \\n" "${lines[0]}"
+}
+
+@test "poorman: .env with a backslash" {
+    fixture backslash_env
+    run_poorman_filtered_without_timestamps start
+    assert_equal "number of lines" 1 ${#lines[@]}
+    assert_equal "line 1" "test | \\n" "${lines[0]}"
+}
