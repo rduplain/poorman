@@ -6,14 +6,14 @@ load poorman
 @test "poorman: invocation without arguments prints usage" {
     run_poorman
     assert_equal "usage line" "usage: poorman start" "${lines[0]}"
-    assert_equal "exit code" "2" "$status"
+    assert_equal "exit code" 2 $status
 }
 
 @test "poorman: invocation with invalid subcommand prints usage" {
     run_poorman fake
     assert_equal "error line" "error: no such command: fake" "${lines[0]}"
     assert_equal "usage line" "usage: poorman start" "${lines[1]}"
-    assert_equal "exit code" "2" "$status"
+    assert_equal "exit code" 2 $status
 }
 
 @test "poorman: invocation without Procfile prints usage" {
@@ -22,7 +22,7 @@ load poorman
     run_poorman start
     assert_equal "error line" "error: Procfile does not exist" "${lines[0]}"
     assert_equal "usage line" "usage: poorman start" "${lines[1]}"
-    assert_equal "exit code" "2" "$status"
+    assert_equal "exit code" 2 $status
 }
 
 @test "poorman: basic Procfile" {
