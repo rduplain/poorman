@@ -23,6 +23,16 @@ To test poorman, run `make test`.
  * http://blog.daviddollar.org/2011/05/06/introducing-foreman.html
  * https://devcenter.heroku.com/articles/procfile
 
+### Debugging Poorman
+
+Any bash program written in `set -e` mode will exit immediately upon failure,
+and if the failure case was not predicted by the programmer, then there may be
+limited log information before the program exits. In these cases, `bash -x
+path/to/poorman start` is useful to see what is happening. If `poorman` is in
+`$PATH`, use:
+
+    bash -x `which poorman` start
+
 ### Test Coverage Report
 
 Install the `bashcov` ruby gem, run `bashcov make test`, then open
