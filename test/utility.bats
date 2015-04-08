@@ -42,6 +42,17 @@ fail_on_two() {
     fi
 }
 
+@test "map_lines: no command given" {
+    fn() {
+        echo one | map_lines
+    }
+    run fn
+    assert_equal "number of lines" 2 ${#lines[@]}
+    assert_equal "line 1" "error: no command given to map_lines" "${lines[0]}"
+    assert_equal "line 2" "usage: map_lines COMMAND" "${lines[1]}"
+    assert_equal "exit code" 2 $status
+}
+
 @test "map_lines: one line" {
     fn() {
         echo one | map_lines double_line
@@ -134,6 +145,18 @@ fail_on_two() {
     assert_equal "line 1" "one one" "${lines[0]}"
     assert_equal "line 2" "two two" "${lines[1]}"
     assert_equal "exit code" 1 $status
+}
+
+@test "map_lines: command with arguments" {
+    fn() {
+        print_three_lines | map_lines echo argument1 argument2
+    }
+    run fn
+    assert_equal "number of lines" 3 ${#lines[@]}
+    assert_equal "line 1" "argument1 argument2 one" "${lines[0]}"
+    assert_equal "line 2" "argument1 argument2 two" "${lines[1]}"
+    assert_equal "line 3" "argument1 argument2 three" "${lines[2]}"
+    assert_equal "exit code" 0 $status
 }
 
 @test "pick_color: fail gracefully when no argument" {

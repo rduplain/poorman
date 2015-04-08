@@ -213,7 +213,7 @@ parse_procfile_line() {
 # Begin map utility to process lines in text using manageable functions.
 
 map_lines() {
-    # Execute <first_argument> for each line in stdin.
+    # Execute given command-line for each line in stdin.
 
     # Understanding read & internal field separator (IFS) in bash:
     #
@@ -225,12 +225,18 @@ map_lines() {
     # if input ends with a line that does not end with a newline, in which case
     # bash still assigns the value to the given name when exiting non-zero.
 
-    local line_function=$1
+    local line_command="$@"
     shift
+
+    if [ -z "$line_command" ]; then
+        echo 'error: no command given to map_lines' >&2
+        echo 'usage: map_lines COMMAND' >&2
+        return 2
+    fi
 
     local count=0
     while IFS= read -r line || [ -n "$line" ]; do
-        $line_function "$line"
+        $line_command "$line"
         local result=$?
         if [ $result -ne 0 ]; then
             # Ensure errors do not get swallowed in this loop.
