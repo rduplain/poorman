@@ -169,8 +169,10 @@ log_line() {
 echo_env_export() {
     # Print eval-able line, intended for use with .env lines.
 
-    local line=${@%%\#*} # Strip out comments.
-    if [[ "$line" == *=* ]]; then
+    local line="$@"
+    local line_before_hash=${line%%\#*}
+    if [[ "$line_before_hash" == *=* ]]; then
+        # Line has '=' before '#'; let the interpreter sort it out.
         echo "export ${line//\\/\\\\}" # <--- Look, mountains! ---
     fi
 }
