@@ -1,0 +1,10 @@
+#!/bin/bash
+# Sleep for $1, run remaining $@, then exit.
+
+set -e
+
+delay=$1
+shift
+
+sleep $delay
+env "$@"

@@ -144,3 +144,12 @@ load poorman
     assert_equal "number of lines" 1 ${#lines[@]}
     assert_equal "line 1" "test | \\n" "${lines[0]}"
 }
+
+@test "poorman: .env with non-comment hashes" {
+    fixture env_with_non_comment_hashes
+    run_poorman_filtered_without_timestamps start
+    assert_equal "number of lines" 3 ${#lines[@]}
+    assert_equal "line 1" "channel      | #cville" "${lines[0]}"
+    assert_equal "line 2" "email-domain | example.com" "${lines[1]}"
+    assert_equal "line 3" "quoted       | Why is this # here?" "${lines[2]}"
+}
