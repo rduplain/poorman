@@ -37,6 +37,7 @@ load poorman
     assert_equal "line 7" "one   | ..." "${lines[6]}"
     assert_equal "line 8" "two   | ..." "${lines[7]}"
     assert_equal "line 9" "three | ..." "${lines[8]}"
+    assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with .env" {
@@ -51,6 +52,7 @@ load poorman
     assert_equal "line 7" "one   | ---" "${lines[6]}"
     assert_equal "line 8" "two   | ---" "${lines[7]}"
     assert_equal "line 9" "three | ---" "${lines[8]}"
+    assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with .env containing a shell parameter" {
@@ -65,6 +67,7 @@ load poorman
     assert_equal "line 7" "one   | xxx" "${lines[6]}"
     assert_equal "line 8" "two   | xxx" "${lines[7]}"
     assert_equal "line 9" "three | xxx" "${lines[8]}"
+    assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with .env, both with additional empty lines" {
@@ -79,6 +82,7 @@ load poorman
     assert_equal "line 7" "one   | ---" "${lines[6]}"
     assert_equal "line 8" "two   | ---" "${lines[7]}"
     assert_equal "line 9" "three | ---" "${lines[8]}"
+    assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with .env with '=' in a comment" {
@@ -93,6 +97,7 @@ load poorman
     assert_equal "line 7" "one   | vvv" "${lines[6]}"
     assert_equal "line 8" "two   | vvv" "${lines[7]}"
     assert_equal "line 9" "three | vvv" "${lines[8]}"
+    assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile missing newline" {
@@ -107,6 +112,7 @@ load poorman
     assert_equal "line 7" "one   | ..." "${lines[6]}"
     assert_equal "line 8" "two   | ..." "${lines[7]}"
     assert_equal "line 9" "three | ..." "${lines[8]}"
+    assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with .env missing newline" {
@@ -121,35 +127,36 @@ load poorman
     assert_equal "line 7" "one   | +++" "${lines[6]}"
     assert_equal "line 8" "two   | +++" "${lines[7]}"
     assert_equal "line 9" "three | +++" "${lines[8]}"
+    assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with early failure of one process" {
     fixture basic_with_early_failure
     run_poorman_filtered_without_timestamps start
-    assert_equal "number of lines" 2 ${#lines[@]}
     assert_equal "line 1" "emo    | I am happy." "${lines[0]}"
     assert_equal "line 2" "menace | I fail you." "${lines[1]}"
+    assert_equal "number of lines" 2 ${#lines[@]}
 }
 
 @test "poorman: Procfile with a backslash" {
     fixture backslash_procfile
     run_poorman_filtered_without_timestamps start
-    assert_equal "number of lines" 1 ${#lines[@]}
     assert_equal "line 1" "test | \\n" "${lines[0]}"
+    assert_equal "number of lines" 1 ${#lines[@]}
 }
 
 @test "poorman: .env with a backslash" {
     fixture backslash_env
     run_poorman_filtered_without_timestamps start
-    assert_equal "number of lines" 1 ${#lines[@]}
     assert_equal "line 1" "test | \\n" "${lines[0]}"
+    assert_equal "number of lines" 1 ${#lines[@]}
 }
 
 @test "poorman: .env with non-comment hashes" {
     fixture env_with_non_comment_hashes
     run_poorman_filtered_without_timestamps start
-    assert_equal "number of lines" 3 ${#lines[@]}
     assert_equal "line 1" "channel      | #cville" "${lines[0]}"
     assert_equal "line 2" "email-domain | example.com" "${lines[1]}"
     assert_equal "line 3" "quoted       | Why is this # here?" "${lines[2]}"
+    assert_equal "number of lines" 3 ${#lines[@]}
 }

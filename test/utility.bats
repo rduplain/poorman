@@ -47,9 +47,9 @@ fail_on_two() {
         echo one | map_lines
     }
     run fn
-    assert_equal "number of lines" 2 ${#lines[@]}
     assert_equal "line 1" "error: no command given to map_lines" "${lines[0]}"
     assert_equal "line 2" "usage: map_lines COMMAND" "${lines[1]}"
+    assert_equal "number of lines" 2 ${#lines[@]}
     assert_equal "exit code" 2 $status
 }
 
@@ -58,8 +58,8 @@ fail_on_two() {
         echo one | map_lines double_line
     }
     run fn
-    assert_equal "number of lines" 1 ${#lines[@]}
     assert_equal "line 1" "one one" "${lines[0]}"
+    assert_equal "number of lines" 1 ${#lines[@]}
     assert_equal "exit code" 0 $status
 }
 
@@ -68,8 +68,8 @@ fail_on_two() {
         echo -n one | map_lines double_line
     }
     run fn
-    assert_equal "number of lines" 1 ${#lines[@]}
     assert_equal "line 1" "one one" "${lines[0]}"
+    assert_equal "number of lines" 1 ${#lines[@]}
     assert_equal "output" "one one" "$output"
     assert_equal "exit code" 0 $status
 }
@@ -79,10 +79,10 @@ fail_on_two() {
         print_three_lines | map_lines double_line
     }
     run fn
-    assert_equal "number of lines" 3 ${#lines[@]}
     assert_equal "line 1" "one one" "${lines[0]}"
     assert_equal "line 2" "two two" "${lines[1]}"
     assert_equal "line 3" "three three" "${lines[2]}"
+    assert_equal "number of lines" 3 ${#lines[@]}
     assert_equal "exit code" 0 $status
 }
 
@@ -91,9 +91,9 @@ fail_on_two() {
         print_three_lines | map_lines fail_on_two
     }
     run fn
-    assert_equal "number of lines" 2 ${#lines[@]}
     assert_equal "line 1" "one one" "${lines[0]}"
     assert_equal "line 2" "two two" "${lines[1]}"
+    assert_equal "number of lines" 2 ${#lines[@]}
     assert_equal "exit code" 1 $status
 }
 
@@ -118,10 +118,10 @@ fail_on_two() {
         print_three_lines_without_final_newline | map_lines double_line
     }
     run fn
-    assert_equal "number of lines" 3 ${#lines[@]}
     assert_equal "line 1" "one one" "${lines[0]}"
     assert_equal "line 2" "two two" "${lines[1]}"
     assert_equal "line 3" "three three" "${lines[2]}"
+    assert_equal "number of lines" 3 ${#lines[@]}
     assert_equal "exit code" 0 $status
 }
 
@@ -130,9 +130,9 @@ fail_on_two() {
         print_three_lines_without_final_newline | map_lines fail_on_two
     }
     run fn
-    assert_equal "number of lines" 2 ${#lines[@]}
     assert_equal "line 1" "one one" "${lines[0]}"
     assert_equal "line 2" "two two" "${lines[1]}"
+    assert_equal "number of lines" 2 ${#lines[@]}
     assert_equal "exit code" 1 $status
 }
 
@@ -141,9 +141,9 @@ fail_on_two() {
         print_two_lines_without_final_newline | map_lines fail_on_two
     }
     run fn
-    assert_equal "number of lines" 2 ${#lines[@]}
     assert_equal "line 1" "one one" "${lines[0]}"
     assert_equal "line 2" "two two" "${lines[1]}"
+    assert_equal "number of lines" 2 ${#lines[@]}
     assert_equal "exit code" 1 $status
 }
 
@@ -152,10 +152,10 @@ fail_on_two() {
         print_three_lines | map_lines echo argument1 argument2
     }
     run fn
-    assert_equal "number of lines" 3 ${#lines[@]}
     assert_equal "line 1" "argument1 argument2 one" "${lines[0]}"
     assert_equal "line 2" "argument1 argument2 two" "${lines[1]}"
     assert_equal "line 3" "argument1 argument2 three" "${lines[2]}"
+    assert_equal "number of lines" 3 ${#lines[@]}
     assert_equal "exit code" 0 $status
 }
 
