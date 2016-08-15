@@ -31,6 +31,7 @@ file).
   subcommand to write startup configuration files, use foreman directly.
 * poorman has no scaling features; it only runs one process per command listed
   in the Procfile.
+* poorman supports bash's full substitution/expansion feature set in .env.
 
 
 ### Motivation
