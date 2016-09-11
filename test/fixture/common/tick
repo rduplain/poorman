@@ -3,23 +3,27 @@
 #
 # This allows Procfile testing with predictable output, assuming that shell
 # interpreter overhead is completed within $INTERVAL seconds (defaults to
-# 0.1). Optionally pass in an argument between 1 and 9 to configure starting
-# sleep value, e.g. `tick 2` to start the first sleep at 0.02 seconds.
+# 0.25). Optionally pass in an argument between 1 and 9 to configure starting
+# sleep value, e.g. `tick 1` (fastest), `tick 2`, or `tick 3` (slowest).
 
 start=${1:-1}
 dot=${DOT:-.}
-interval=${INTERVAL:-0.1}
+interval=${INTERVAL:-0.25}
 
-if [ $start -lt 1 ] || [ $start -gt 9 ]; then
+if [ $start -lt 1 ] || [ $start -gt 3 ]; then
     # Narrow configuration to avoid non-integer arithmetic.
     echo 'usage: tick [NUM]' >&2
     echo 'NUM must be between 1 and 3, inclusive.' >&2
     exit 1
 fi
 
-x=$start
+case $start in
+    1 ) sleep 0.10;;
+    2 ) sleep 0.15;;
+    3 ) sleep 0.20;;
+    * ) sleep 0.10;;
+esac
 
-sleep 0.0$x
 sleep $interval; echo $dot
 sleep $interval; echo $dot$dot
 sleep $interval; echo $dot$dot$dot
