@@ -77,6 +77,11 @@ main() {
         trap_during_setup
         main_run "$@"
     elif [ "$command" = "source" ]; then
+        # Other bash programs can source this file:
+        #
+        #     . path/to/poorman source
+        #
+        # Calling the `source` subcommand does nothing other than change env.
         unset POORMAN PROGRAM # These are incorrect when poorman is sourced.
         pass
     else
