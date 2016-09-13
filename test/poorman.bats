@@ -207,3 +207,11 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
     assert_equal "output" "$export_error" "${lines[0]}"
     assert_equal "exit code" 2 $status
 }
+
+@test "poorman: check refers to reference implementation." {
+    fixture run_a_command
+    run_poorman check
+    check_error="poorman: check not implemented; use foreman check."
+    assert_equal "output" "$check_error" "${lines[0]}"
+    assert_equal "exit code" 2 $status
+}

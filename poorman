@@ -78,6 +78,8 @@ main() {
         main_run "$@"
     elif [ "$command" = "export" ]; then
         main_export "$@"
+    elif [ "$command" = "check" ]; then
+        main_check "$@"
     elif [ "$command" = "source" ]; then
         # Other bash programs can source this file:
         #
@@ -204,6 +206,13 @@ main_export() {
     # Refer to reference implementation of export subcommand.
 
     echo "$PROGRAM: export not implemented; use foreman export." >&2
+    return 2
+}
+
+main_check() {
+    # Refer to reference implementation of check subcommand.
+
+    echo "$PROGRAM: check not implemented; use foreman check." >&2
     return 2
 }
 
