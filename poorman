@@ -85,7 +85,8 @@ main() {
         #
         #     . path/to/poorman source
         #
-        # Calling the `source` subcommand does nothing other than change env.
+        # Calling the `source` subcommand prevents normal execution.
+        # In particular, this is useful in calling poorman functions.
         unset POORMAN PROGRAM # These are incorrect when poorman is sourced.
         pass
     else
