@@ -7,9 +7,9 @@
 
 poorman is a shell port of [foreman](http://ddollar.github.io/foreman/) for
 process control using Procfile and .env files, for development on Unix-like
-systems. Its only dependency is the bash shell. It is designed to run all
-processes specified in the given Procfile, and exit all processes when any such
-process exits.
+systems. Its only dependency is the bash shell (GNU bash 3.2.0+). It is
+designed to run all processes specified in the given Procfile, and exit all
+processes when any such process exits.
 
 See [Profile documentation](https://devcenter.heroku.com/articles/procfile).
 Either check static Procfile and .env files into version control, or build
