@@ -3,16 +3,18 @@
 load test_helper
 load poorman
 
+USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
+
 @test "poorman: invocation without arguments prints usage" {
     run_poorman
-    assert_equal "usage line" "usage: poorman start [PROCESS]" "${lines[0]}"
+    assert_equal "usage line" "$USAGE_LINE" "${lines[0]}"
     assert_equal "exit code" 2 $status
 }
 
 @test "poorman: invocation with invalid subcommand prints usage" {
     run_poorman fake
     assert_equal "error line" "error: no such command: fake" "${lines[0]}"
-    assert_equal "usage line" "usage: poorman start [PROCESS]" "${lines[1]}"
+    assert_equal "usage line" "$USAGE_LINE" "${lines[1]}"
     assert_equal "exit code" 2 $status
 }
 
@@ -21,7 +23,7 @@ load poorman
     assert_does_not_exist "local Procfile does not exist when testing" Procfile
     run_poorman start
     assert_equal "error line" "error: Procfile does not exist" "${lines[0]}"
-    assert_equal "usage line" "usage: poorman start [PROCESS]" "${lines[1]}"
+    assert_equal "usage line" "$USAGE_LINE" "${lines[1]}"
     assert_equal "exit code" 2 $status
 }
 

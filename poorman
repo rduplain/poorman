@@ -365,11 +365,11 @@ usage() {
 
     clear_traps
 
-    echo "usage: $PROGRAM start [PROCESS]" >&2
-    echo "usage: $PROGRAM run COMMAND [ARGS...]" >&2
+    echo "usage: $PROGRAM start [PROCESS]        # Start processes." >&2
+    echo "usage: $PROGRAM run COMMAND [ARGS...]  # Run arbitrary command." >&2
     echo >&2
     echo "$PROGRAM is a shell port of foreman." >&2
-    echo "It reads Procfile and .env in the current working directory." >&2
+    echo "It reads Procfile & .env files in the current working directory." >&2
     return 2
 }
 
