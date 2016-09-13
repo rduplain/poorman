@@ -2,18 +2,18 @@ include .Makefile.d/bats-command.mk
 
 all: test
 
+run:
+	@./poorman start
+
 test: bats-command
 	@$(BATS) test/*.bats
 
-coverage: bats-command coverage-deps
+coverage: bashcov-command bats-command
 	@bashcov $(BATS) test/*.bats
 
-coverage-deps:
-	@gem install --no-ri --no-rdoc coveralls -v '~> 0.8'
-	@gem install --no-ri --no-rdoc bashcov -v '~> 1.3'
-
-run:
-	@./poorman start
+bashcov-command: gem-command
+	@which bashcov > /dev/null || \
+		gem install --no-ri --no-rdoc 'coveralls:~> 0.8' 'bashcov:~> 1.3'
 
 clean: clean-bats
 
