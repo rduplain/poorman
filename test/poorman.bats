@@ -199,3 +199,11 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
     assert_equal "output" "This value is from a .env file." "${lines[0]}"
     assert_equal "exit code" 0 $status
 }
+
+@test "poorman: export refers to reference implementation." {
+    fixture run_a_command
+    run_poorman export
+    export_error="poorman: export not implemented; use foreman export."
+    assert_equal "output" "$export_error" "${lines[0]}"
+    assert_equal "exit code" 2 $status
+}

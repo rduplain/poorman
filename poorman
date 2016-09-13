@@ -76,6 +76,8 @@ main() {
     elif [ "$command" = "run" ]; then
         trap_during_setup
         main_run "$@"
+    elif [ "$command" = "export" ]; then
+        main_export "$@"
     elif [ "$command" = "source" ]; then
         # Other bash programs can source this file:
         #
@@ -196,6 +198,13 @@ main_run() {
     # Expand any shell parameters in the provided command.
     local command_line=$(eval echo "${@//\\/\\\\}") # <--- Look, mountains! ---
     exec $command_line
+}
+
+main_export() {
+    # Refer to reference implementation of export subcommand.
+
+    echo "$PROGRAM: export not implemented; use foreman export." >&2
+    return 2
 }
 
 add_pid() {
