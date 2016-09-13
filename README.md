@@ -75,8 +75,12 @@ path/to/poorman start` is useful to see what is happening. If `poorman` is in
 
 #### Test Coverage Report
 
-Install the `bashcov` ruby gem, run `bashcov make test`, then open
-`coverage/index.html` to view the report (tested with bashcov 1.1.0 on ruby
+Run:
+
+    make coverage
+
+Alternative, install the `bashcov` ruby gem, then run `bashcov make test`. View
+the report at `coverage/index.html` (tested with bashcov 1.1.0 on ruby
 2.2.0).
 
 
