@@ -18,10 +18,10 @@ if [ $start -lt 1 ] || [ $start -gt 3 ]; then
 fi
 
 case $start in
-    1 ) sleep 0.10;;
-    2 ) sleep 0.15;;
-    3 ) sleep 0.20;;
-    * ) sleep 0.10;;
+    1) sleep 0.10;;
+    2) sleep 0.15;;
+    3) sleep 0.20;;
+    *) sleep 0.10;;
 esac
 
 sleep $interval; echo $dot
