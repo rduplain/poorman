@@ -1,0 +1,4 @@
+#!/bin/bash
+# Be uninteresting.
+
+echo "You have the wrong command."

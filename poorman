@@ -109,6 +109,16 @@ main_start() {
         eval "$(map_lines echo_env_export < .env)"
     fi
 
+    if [ $# -eq 0 ]; then
+        main_start_all
+    else
+        main_start_one "$@"
+    fi
+}
+
+main_start_all() {
+    # Start all processes in Procfile, to be called from main_start.
+
     # Load the Procfile, parse it, and execute the commands found there.
     build_logging_pad
     map_lines exec_procfile_line < Procfile
@@ -121,6 +131,26 @@ main_start() {
     [[ -n "$POORMAN_SELECTIVE_KILL" ]] && trap 'clear_traps; kill ${POORMAN_PIDS[@]} >/dev/null 2>&1' SIGINT SIGTERM EXIT || trap 'clear_traps; kill 0' SIGINT SIGTERM EXIT
 
     wait
+}
+
+main_start_one() {
+    # Start one process in Procfile, by name, to be called from main_start.
+
+    if [ $# -ne 1 ]; then
+        echo "error: too many names given: $@" >&2
+        echo >&2
+        usage
+    fi
+
+    local name="$1"
+    local command=$(map_lines echo_command_for "$name" < Procfile)
+
+    if [ -z "$command" ]; then
+        echo "error: no command found for '$name'" >&2
+        return 2
+    fi
+
+    exec $command
 }
 
 main_exec() {
@@ -200,6 +230,20 @@ echo_procfile_name() {
         return
     fi
     echo $POORMAN_NAME
+}
+
+echo_command_for() {
+    # Given a name and a Procfile-style line, print command if name matches.
+
+    local name="$1"
+    shift
+
+    unset POORMAN_NAME POORMAN_COMMAND
+    parse_procfile_line "$@"
+
+    if [ "$POORMAN_NAME" = "$name" ]; then
+        echo $POORMAN_COMMAND
+    fi
 }
 
 parse_procfile_line() {
@@ -305,10 +349,10 @@ usage() {
 
     clear_traps
 
-    echo "usage: $PROGRAM start" >&2
+    echo "usage: $PROGRAM start [PROCESS]" >&2
     echo >&2
-    echo "$PROGRAM is a shell port of foreman, and" >&2
-    echo "reads Procfile and .env in the current working directory." >&2
+    echo "$PROGRAM is a shell port of foreman." >&2
+    echo "It reads Procfile and .env in the current working directory." >&2
     return 2
 }
 

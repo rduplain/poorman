@@ -1,0 +1,6 @@
+#!/bin/bash
+# Echo something personal.
+
+echo "Hello, $NAME!"
+echo "Hello, $NAME!"
+echo "Hello, $NAME!"
