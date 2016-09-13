@@ -186,6 +186,39 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
     assert_equal "exit code" 2 $status
 }
 
+@test "poorman: Procfile with commands containing shell parameters" {
+    fixture parameter_in_command
+    run_poorman_filtered_without_timestamps start
+    assert_equal "line 1" "one   | x" "${lines[0]}"
+    assert_equal "line 2" "two   | y" "${lines[1]}"
+    assert_equal "line 3" "three | z" "${lines[2]}"
+    assert_equal "line 4" "one   | xx" "${lines[3]}"
+    assert_equal "line 5" "two   | yy" "${lines[4]}"
+    assert_equal "line 6" "three | zz" "${lines[5]}"
+    assert_equal "line 7" "one   | xxx" "${lines[6]}"
+    assert_equal "line 8" "two   | yyy" "${lines[7]}"
+    assert_equal "line 9" "three | zzz" "${lines[8]}"
+    assert_equal "number of lines" 9 ${#lines[@]}
+}
+
+@test "poorman: start one process containing a shell parameter" {
+    fixture parameter_in_command
+    run_poorman start one
+    assert_equal "line 1" "x" "${lines[0]}"
+    assert_equal "line 2" "xx" "${lines[1]}"
+    assert_equal "line 3" "xxx" "${lines[2]}"
+    assert_equal "number of lines" 3 ${#lines[@]}
+}
+
+@test "poorman: start one process containing another shell parameter" {
+    fixture parameter_in_command
+    run_poorman start three
+    assert_equal "line 1" "z" "${lines[0]}"
+    assert_equal "line 2" "zz" "${lines[1]}"
+    assert_equal "line 3" "zzz" "${lines[2]}"
+    assert_equal "number of lines" 3 ${#lines[@]}
+}
+
 @test "poorman: run an arbitrary command" {
     fixture run_a_command
     run_poorman run ./test_command

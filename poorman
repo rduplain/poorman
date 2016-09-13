@@ -163,6 +163,8 @@ main_start_one() {
         return 2
     fi
 
+    # Expand any shell parameters in the provided command.
+    command=$(eval echo "${command//\\/\\\\}") # <--- Look, mountains! ---
     exec $command
 }
 

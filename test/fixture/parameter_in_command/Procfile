@@ -1,0 +1,3 @@
+one: env DOT=x ../common/tick 1
+two: ../common/tick 2
+three: env DOT=$__Z ../common/tick 3
