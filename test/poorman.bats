@@ -183,3 +183,17 @@ load poorman
     assert_equal "error line" "error: no command found for 'xyz'" "${lines[0]}"
     assert_equal "exit code" 2 $status
 }
+
+@test "poorman: run an arbitrary command" {
+    fixture run_a_command
+    run_poorman run ./test_command
+    assert_equal "output" "This value is from a .env file." "${lines[0]}"
+    assert_equal "exit code" 0 $status
+}
+
+@test "poorman: run an arbitrary command with variable" {
+    fixture run_a_command
+    run_poorman run 'echo $FACT_FOR_USE_WITH_TEST_COMMAND_123456'
+    assert_equal "output" "This value is from a .env file." "${lines[0]}"
+    assert_equal "exit code" 0 $status
+}

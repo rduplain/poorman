@@ -1,0 +1,4 @@
+#!/bin/bash
+# Echo a fact from .env, for testing.
+
+echo $FACT_FOR_USE_WITH_TEST_COMMAND_123456

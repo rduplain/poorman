@@ -73,6 +73,9 @@ main() {
     elif [ "$command" = "exec" ]; then
         trap_during_setup
         main_exec "$@"
+    elif [ "$command" = "run" ]; then
+        trap_during_setup
+        main_run "$@"
     elif [ "$command" = "source" ]; then
         unset POORMAN PROGRAM # These are incorrect when poorman is sourced.
         pass
@@ -175,6 +178,19 @@ main_exec() {
     [[ -n "$POORMAN_SELECTIVE_KILL" ]] && trap 'clear_traps; kill $NEXT_OF_KIN >/dev/null 2>&1' SIGINT SIGTERM EXIT || trap 'clear_traps; kill 0' SIGINT SIGTERM EXIT
 
     wait
+}
+
+main_run() {
+    # Load .env & execute given command, without any additional log handling.
+
+    # Load environment from .env file.
+    if [ -e .env ]; then
+        eval "$(map_lines echo_env_export < .env)"
+    fi
+
+    # Expand any shell parameters in the provided command.
+    local command_line=$(eval echo "${@//\\/\\\\}") # <--- Look, mountains! ---
+    exec $command_line
 }
 
 add_pid() {
@@ -350,6 +366,7 @@ usage() {
     clear_traps
 
     echo "usage: $PROGRAM start [PROCESS]" >&2
+    echo "usage: $PROGRAM run COMMAND [ARGS...]" >&2
     echo >&2
     echo "$PROGRAM is a shell port of foreman." >&2
     echo "It reads Procfile and .env in the current working directory." >&2
