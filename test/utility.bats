@@ -166,7 +166,7 @@ fail_on_two() {
 }
 
 @test "pick_color: sample a color" {
-    run pick_color 2
+    run pick_color 4
     assert_equal "output" "\033[31m" "$output"
     assert_equal "exit code" 0 $status
 }

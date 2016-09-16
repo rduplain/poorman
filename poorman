@@ -405,6 +405,10 @@ build_logging_pad() {
     export POORMAN_PAD
 }
 
+# Colors for use logging to terminal, with ANSI code.
+#       cyan    yellow  green   magenta red     blue
+COLORS=(36      33      32      35      31      34)
+
 pick_color() {
     # Pick a color from a preset given an integer, echo ANSI escape sequence.
 
@@ -415,15 +419,10 @@ pick_color() {
     local number=$1
     shift
 
-    local cyan='\033[36m'
-    local magenta='\033[35m'
-    local red='\033[31m'
-    local green='\033[32m'
-    local yellow='\033[33m'
+    let number_of_colors=${#COLORS[@]}
 
-    local colors=( $cyan $magenta $red $green $yellow )
-    let index=$number%5
-    echo ${colors[$index]}
+    let index=$number%$number_of_colors
+    echo '\033['${COLORS[$index]}m
 }
 
 pass() {
