@@ -23,6 +23,41 @@ then run `poorman start` in a directory with a Procfile (and optionally a .env
 file).
 
 
+### Running Inside a Project's Environment
+
+To run interactive commands inside your project's environment, run (with
+`poorman` in the `$PATH`):
+
+    poorman run COMMAND [ARGS...]
+
+To have your shell source the .env in the same way that poorman does, so that
+variables are available on the command line and to executed programs, you have
+two options.
+
+Option 1, start a new interactive shell session:
+
+    poorman run $SHELL
+
+Option 2, source poorman and call its internal `source_dotenv` utility:
+
+    . poorman source
+    source_dotenv
+
+The `source_dotenv` utility takes an optional argument when not using `.env` as
+the filepath:
+
+    source_dotenv path/to/env
+
+Note that poorman is written in bash, and is only tested with bash. If you are
+using a shell other than bash, verify that option 2 works for your environment
+before proceeding.
+
+Both options 1 and 2 will setup the shell environment variables for further
+interaction and execution. Changes to the .env file are not automatically
+detected; either restart the shell (option 1) or call `source_dotenv` again
+(option 2).
+
+
 ### Differences Between poorman and foreman
 
 * poorman is written in shell (bash); foreman is written in Ruby.
