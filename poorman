@@ -121,10 +121,7 @@ main_start() {
         usage
     fi
 
-    # Load environment from .env file.
-    if [ -e .env ]; then
-        eval "$(map_lines echo_env_export < .env)"
-    fi
+    source_dotenv
 
     if [ $# -eq 0 ]; then
         main_start_all
@@ -199,10 +196,7 @@ main_exec() {
 main_run() {
     # Load .env & execute given command, without any additional log handling.
 
-    # Load environment from .env file.
-    if [ -e .env ]; then
-        eval "$(map_lines echo_env_export < .env)"
-    fi
+    source_dotenv
 
     # Expand any shell parameters in the provided command.
     local command_line=$(eval echo "${@//\\/\\\\}") # <--- Look, mountains! ---
@@ -248,7 +242,7 @@ echo_env_export() {
     local line="$@"
     local line_before_hash=${line%%\#*}
     if [[ "$line_before_hash" == *=* ]]; then
-        # Line has '=' before '#'; let the interpreter sort it out.
+        # Line has '=' before '#'. Send it along.
         echo "export ${line//\\/\\\\}" # <--- Look, mountains! ---
     fi
 }
@@ -347,6 +341,14 @@ pass() {
 }
 
 # Begin top-level program utilities.
+
+source_dotenv() {
+    # Source the .env file in the current working directory, if it exists.
+
+    if [ -e .env ]; then
+        eval "$(map_lines echo_env_export < .env)"
+    fi
+}
 
 build_logging_pad() {
     # Inspect all Procfile names & set POORMAN_PAD accordingly.
