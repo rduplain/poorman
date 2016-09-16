@@ -8,8 +8,8 @@
 poorman is a shell port of [foreman](http://ddollar.github.io/foreman/) for
 process control using Procfile and .env files, for development on Unix-like
 systems. Its only dependency is the bash shell (GNU bash 3.2.0+). It is
-designed to run all processes specified in the given Procfile, and exit all
-processes when any such process exits.
+designed to run all processes specified in the Procfile in the current
+directory, and exit all processes when any such process exits.
 
 See [Profile documentation](https://devcenter.heroku.com/articles/procfile).
 Either check static Procfile and .env files into version control, or build
@@ -70,7 +70,7 @@ limited log information before the program exits. In these cases, `bash -x
 path/to/poorman start` is useful to see what is happening. If `poorman` is in
 `$PATH`, use:
 
-    bash -x `which poorman` start
+    bash -x poorman start
 
 
 #### Test Coverage Report

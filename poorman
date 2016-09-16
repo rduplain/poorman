@@ -85,6 +85,10 @@ main() {
         #
         #     . path/to/poorman source
         #
+        # Or if poorman is in the $PATH:
+        #
+        #     . poorman source
+        #
         # Calling the `source` subcommand prevents normal execution.
         # In particular, this is useful in calling poorman functions.
         unset POORMAN PROGRAM # These are incorrect when poorman is sourced.
