@@ -372,12 +372,6 @@ map_lines() {
     done
 }
 
-pass() {
-    # No operation.
-
-    :
-}
-
 # Begin top-level program utilities.
 
 source_dotenv() {
@@ -430,6 +424,12 @@ pick_color() {
     local colors=( $cyan $magenta $red $green $yellow )
     let index=$number%5
     echo ${colors[$index]}
+}
+
+pass() {
+    # No operation.
+
+    :
 }
 
 usage() {
