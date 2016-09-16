@@ -1,0 +1,2 @@
+command: ./this\ command 0 foo bar baz
+command2: './this command' 0.1 foo bar baz

@@ -219,6 +219,21 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
     assert_equal "number of lines" 3 ${#lines[@]}
 }
 
+@test "poorman: Procfile with command containing a space" {
+    fixture command_with_space
+    run_poorman_filtered_without_timestamps start
+    assert_equal "line 1" "command  | foo bar baz" "${lines[0]}"
+    assert_equal "line 2" "command2 | foo bar baz" "${lines[1]}"
+    assert_equal "number of lines" 2 ${#lines[@]}
+}
+
+@test "poorman: start one process containing a space" {
+    fixture command_with_space
+    run_poorman start command
+    assert_equal "line 1" "foo bar baz" "${lines[0]}"
+    assert_equal "number of lines" 1 ${#lines[@]}
+}
+
 @test "poorman: run an arbitrary command" {
     fixture run_a_command
     run_poorman run ./test_command
@@ -227,9 +242,24 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
 }
 
 @test "poorman: run an arbitrary command with variable" {
+    skip "This is experimental and not supported."
     fixture run_a_command
     run_poorman run 'echo $FACT_FOR_USE_WITH_TEST_COMMAND_123456'
     assert_equal "output" "This value is from a .env file." "${lines[0]}"
+    assert_equal "exit code" 0 $status
+}
+
+@test "poorman: run a command with a space using backslash" {
+    fixture command_with_space
+    run_poorman run ./this\ command 0 foo bar baz
+    assert_equal "output" "foo bar baz" "${lines[0]}"
+    assert_equal "exit code" 0 $status
+}
+
+@test "poorman: run a command with a space using quotes" {
+    fixture command_with_space
+    run_poorman run './this command' 0 foo bar baz
+    assert_equal "output" "foo bar baz" "${lines[0]}"
     assert_equal "exit code" 0 $status
 }
 

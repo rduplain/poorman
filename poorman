@@ -157,33 +157,34 @@ main_start_one() {
     fi
 
     local name="$1"
-    local command=$(map_lines echo_command_for "$name" < Procfile)
+    declare command
+
+    map_lines parse_command_for "$name" command < Procfile
 
     if [ -z "$command" ]; then
         echo "error: no command found for '$name'" >&2
         return 2
     fi
 
-    # Expand any shell parameters in the provided command.
-    command=$(eval echo "${command//\\/\\\\}") # <--- Look, mountains! ---
-    exec $command
+    eval set -- "$command"
+    exec "$@"
 }
 
 main_exec() {
-    # Load .env & execute given command, logging each line w/metadata prefix.
+    # Execute given command, logging each line w/metadata prefix.
 
-    # Expand any shell parameters in the Procfile command.
-    local command_line=$(eval echo "${@//\\/\\\\}") # <--- Look, mountains! ---
     # Disable pathname expansion to avoid glob expansion in logs.
     set -f
+
     # Compute the logging prefix to line up stdout among processes.
     local pad_length=${#POORMAN_PAD}
     local name_length=${#POORMAN_NAME}
     let filler_length=pad_length-name_length+1
     local log_prefix="$POORMAN_NAME${POORMAN_PAD:0:$filler_length}|"
+
     # Execute the command, logging each line with timestamp & program name.
     export POORMAN_LOG_PREFIX="$log_prefix"
-    exec $command_line 2>&1 | map_lines log_line &
+    exec "$@" 2>&1 | map_lines log_line &
     export POORMAN_LOGGER_PID=$!
 
     # Set trap in a single line to simplify coverage.
@@ -197,10 +198,7 @@ main_run() {
     # Load .env & execute given command, without any additional log handling.
 
     source_dotenv
-
-    # Expand any shell parameters in the provided command.
-    local command_line=$(eval echo "${@//\\/\\\\}") # <--- Look, mountains! ---
-    exec $command_line
+    exec "$@"
 }
 
 main_export() {
@@ -252,52 +250,92 @@ exec_procfile_line() {
     #
     # Calls poorman recursively to `exec` into command & support killing group.
 
-    parse_procfile_line "$@"
+    parse_procfile_line POORMAN_NAME POORMAN_COMMAND "$@"
     if [ -z "$POORMAN_COMMAND" ]; then
         return
     fi
+    eval set -- "$POORMAN_COMMAND"
+
     export POORMAN_LOG_COLOR=$(pick_color $PROGRAM_COUNT)
     let PROGRAM_COUNT=PROGRAM_COUNT+1
-    $POORMAN exec "$POORMAN_COMMAND" 2>/dev/null &
+    $POORMAN exec "$@" 2>/dev/null &
     add_pid $!
 }
 
 echo_procfile_name() {
     # Parse Procfile-style line, print name of program entry.
 
-    parse_procfile_line "$@"
-    if [ -z "$POORMAN_NAME" ]; then
+    parse_procfile_line name _ "$@"
+    if [ -z "$name" ]; then
         return
     fi
-    echo $POORMAN_NAME
-}
-
-echo_command_for() {
-    # Given a name and a Procfile-style line, print command if name matches.
-
-    local name="$1"
-    shift
-
-    unset POORMAN_NAME POORMAN_COMMAND
-    parse_procfile_line "$@"
-
-    if [ "$POORMAN_NAME" = "$name" ]; then
-        echo $POORMAN_COMMAND
-    fi
+    echo "$name"
 }
 
 parse_procfile_line() {
-    # Parse Procfile-style line into $POORMAN_NAME & $POORMAN_COMMAND.
+    # Parse Procfile-style line into arguments given by name: name, command.
+    #
+    # `name` is just a string.
+    # `command` is raw and ready for evaluation by the shell:
+    #
+    #     parse_procfile_line NAME COMMAND "$procfile_line"
+    #     eval set -- "$COMMAND"
+    #     exec "$@"
+    #
+    # Use of eval here allows .env variables to be used in Procfile commands.
+
+    # Understanding poorman internals:
+    #
+    # poorman reads each line from the Procfile as a simple, unprocessed string
+    # (via map_lines), which puts the entire Procfile line into argument `$3`
+    # when this function is called.
+    #
+    # At some point, poorman needs to parse the line from the Procfile exactly
+    # as the shell would parse it. The best parser for this is the shell itself
+    # (e.g. `set -- "$COMMAND"`), but caution must be taken in order to avoid
+    # implicitly processing the string. Echoing the string will lose quoting
+    # and escapes. Parsing the string into an argument array here will hit
+    # limitations in what can be exported, since the name of the command
+    # variable is taken as an argument. Therefore, this function passes the
+    # command as a single opaque string, to be parsed via `set` just before
+    # `exec` is to be called by poorman.
+    #
+    # Further, to be complete, poorman must support backslash escapes. The bash
+    # builtin `read` parses differently from `set`, so is not an option given
+    # that poorman's design intends to use `set`, as just discussed. Escaping
+    # backslashes ("mountains") will ensure that `eval set -- "$COMMAND"` has
+    # the correct level of escaping when parsing, with one exception:
+    # spaces. '\ ' is special in that its primary intent is to indicate a space
+    # in an unquoted word, typically a filepath. As such, backslash-escaped
+    # spaces are intended for the shell parser (i.e. `set`) and are the
+    # exception in backslash-escaped backslashes (i.e. the "valley" in the
+    # "mountains").
+
+    local name_var=$1
+    local command_var=$2
+    shift 2
 
     local line="$@"
-    line=${line%%\#*} # Strip out comments.
-    if [ -z "$line" ]; then
-        # Line is empty. Ensure values are unset for caller inspection.
-        unset POORMAN_NAME POORMAN_COMMAND
-        return
+    line="${line//\\/\\\\}"    # <--- Look, mountains! ---
+    line="${line//\\\\ /\\ }"  # <--- Look, valley! ---
+
+    export $name_var="${line%%:*}"    # everything up to first ':'
+    export $command_var="${line#*: }" # everything after first ':'
+}
+
+parse_command_for() {
+    # Given a name and a Procfile-style line, print command if name matches.
+
+    local name_var=$1
+    local command_var=$2
+    shift 2
+
+    declare _parse_command_for_name _parse_command_for_command
+    parse_procfile_line _parse_command_for_name _parse_command_for_command "$@"
+
+    if [ "$_parse_command_for_name" = "$name_var" ]; then
+        export $command_var="$_parse_command_for_command"
     fi
-    export POORMAN_NAME=${line%%:*}    # everything up to first ':'
-    export POORMAN_COMMAND=${line#*: } # everything after first ':'
 }
 
 # Begin map utility to process lines in text using manageable functions.
