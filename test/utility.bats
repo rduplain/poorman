@@ -170,3 +170,19 @@ fail_on_two() {
     assert_equal "output" "\033[31m" "$output"
     assert_equal "exit code" 0 $status
 }
+
+@test "source_dotenv: source .env" {
+    fixture basic_env
+    unset DOT
+    source_dotenv .env
+    assert_equal '$DOT' "-" "$DOT"
+    unset DOT
+}
+
+@test "source_dotenv: source env with nonstandard filepath" {
+    fixture basic_env_with_nonstandard_envfile
+    unset DOT
+    source_dotenv env
+    assert_equal '$DOT' "-" "$DOT"
+    unset DOT
+}

@@ -345,8 +345,10 @@ pass() {
 source_dotenv() {
     # Source the .env file in the current working directory, if it exists.
 
-    if [ -e .env ]; then
-        eval "$(map_lines echo_env_export < .env)"
+    local dotenv="${1:-.env}"
+
+    if [ -e "$dotenv" ]; then
+        eval "$(map_lines echo_env_export < "$dotenv")"
     fi
 }
 
