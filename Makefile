@@ -14,8 +14,8 @@ coverage: bashcov-command bats-command
 bashcov-command: gem-command
 	@which bashcov > /dev/null || \
 		gem install --no-ri --no-rdoc \
-			simplecov:0.11.0 \
-			coveralls:0.8.12 \
+			simplecov:0.12.0 \
+			coveralls:0.8.19 \
 			bashcov:1.3.1
 
 clean: clean-bats
