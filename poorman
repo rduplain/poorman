@@ -316,6 +316,14 @@ parse_procfile_line() {
     shift 2
 
     local line="$@"
+
+    line=${line%%\#*} # Strip out comments.
+    if [ -z "$line" ]; then
+        # Line is empty. Ensure values are unset for caller inspection.
+        unset $name_var $command_var
+        return
+    fi
+
     line="${line//\\/\\\\}"    # <--- Look, mountains! ---
     line="${line//\\\\ /\\ }"  # <--- Look, valley! ---
 

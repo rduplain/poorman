@@ -102,6 +102,21 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
     assert_equal "number of lines" 9 ${#lines[@]}
 }
 
+@test "poorman: basic Procfile with a comment" {
+    fixture basic_with_comment_in_procfile
+    run_poorman_filtered_without_timestamps start
+    assert_equal "line 1" "one   | ." "${lines[0]}"
+    assert_equal "line 2" "two   | ." "${lines[1]}"
+    assert_equal "line 3" "three | ." "${lines[2]}"
+    assert_equal "line 4" "one   | .." "${lines[3]}"
+    assert_equal "line 5" "two   | .." "${lines[4]}"
+    assert_equal "line 6" "three | .." "${lines[5]}"
+    assert_equal "line 7" "one   | ..." "${lines[6]}"
+    assert_equal "line 8" "two   | ..." "${lines[7]}"
+    assert_equal "line 9" "three | ..." "${lines[8]}"
+    assert_equal "number of lines" 9 ${#lines[@]}
+}
+
 @test "poorman: basic Procfile missing newline" {
     fixture basic_missing_newline
     run_poorman_filtered_without_timestamps start
