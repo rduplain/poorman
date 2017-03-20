@@ -217,6 +217,12 @@ do_parse_procfile_line() {\
     assert_equal "command" "" "${lines[1]}"
 }
 
+@test "parse_procfile_line: comment preceded by tab" {
+    run do_parse_procfile_line "	# this is a comment";
+    assert_equal "name" "" "${lines[0]}"
+    assert_equal "command" "" "${lines[1]}"
+}
+
 @test "parse_procfile_line: statement with comment" {
     run do_parse_procfile_line "foo: echo hello # this is a comment";
     assert_equal "name" "foo" "${lines[0]}"

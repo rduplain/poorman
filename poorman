@@ -317,7 +317,7 @@ parse_procfile_line() {
 
     local line="$@"
 
-    if [[ "$line" =~ ^\ *# ]]; then
+    if [[ "$line" =~ ^[[:space:]]*# ]]; then
         # Line is comment only. Ensure values are unset for caller inspection.
         unset $name_var $command_var
         return
