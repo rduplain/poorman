@@ -317,9 +317,8 @@ parse_procfile_line() {
 
     local line="$@"
 
-    line=${line%%\#*} # Strip out comments.
-    if [ -z "$line" ]; then
-        # Line is empty. Ensure values are unset for caller inspection.
+    if [[ "$line" =~ ^\ *# ]]; then
+        # Line is comment only. Ensure values are unset for caller inspection.
         unset $name_var $command_var
         return
     fi
