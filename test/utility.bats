@@ -186,3 +186,58 @@ fail_on_two() {
     assert_equal '$DOT' "-" "$DOT"
     unset DOT
 }
+
+do_parse_procfile_line() {\
+    parse_procfile_line NAME COMMAND "$1";
+    echo $NAME
+    echo $COMMAND
+}
+
+@test "parse_procfile_line: statement" {
+    run do_parse_procfile_line "foo: echo bar"
+    assert_equal "name" "foo" "${lines[0]}"
+    assert_equal "command" "echo bar" "${lines[1]}"
+}
+
+@test "parse_procfile_line: blank line" {
+    run do_parse_procfile_line ""
+    assert_equal "name" "" "${lines[0]}"
+    assert_equal "command" "" "${lines[1]}"
+}
+
+@test "parse_procfile_line: whitespace-only line" {
+    run do_parse_procfile_line "   "
+    assert_equal "name" "" "${lines[0]}"
+    assert_equal "command" "" "${lines[1]}"
+}
+
+@test "parse_procfile_line: comment" {
+    run do_parse_procfile_line "    # this is a comment";
+    assert_equal "name" "" "${lines[0]}"
+    assert_equal "command" "" "${lines[1]}"
+}
+
+@test "parse_procfile_line: comment preceded by tab" {
+    run do_parse_procfile_line "	# this is a comment";
+    assert_equal "name" "" "${lines[0]}"
+    assert_equal "command" "" "${lines[1]}"
+}
+
+@test "parse_procfile_line: statement with comment" {
+    run do_parse_procfile_line "foo: echo hello # this is a comment";
+    assert_equal "name" "foo" "${lines[0]}"
+    assert_equal "command" "echo hello # this is a comment" "${lines[1]}"
+}
+
+@test "parse_procfile_line: statement with hash in quotes" {
+    run do_parse_procfile_line "foo: echo '#hello'";
+    assert_equal "name" "foo" "${lines[0]}"
+    assert_equal "command" "echo '#hello'" "${lines[1]}"
+}
+
+@test "parse_procfile_line: statement with hash in expression" {
+    run do_parse_procfile_line 'foo: echo ${0##*/}: There are $# arguments';
+    assert_equal "name" "foo" "${lines[0]}"
+    assert_equal "command" 'echo ${0##*/}: There are $# arguments' "${lines[1]}"
+}
+
