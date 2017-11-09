@@ -412,7 +412,7 @@ build_logging_pad() {
     export POORMAN_PAD
 }
 
-# Colors for use logging to terminal, with ANSI code.
+# ANSI color codes to use when logging to the terminal, in rotation.
 #       cyan    yellow  green   magenta red     blue
 COLORS=(36      33      32      35      31      34)
 
