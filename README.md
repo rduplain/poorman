@@ -25,16 +25,16 @@ file).
 
 ### Running Inside a Project's Environment
 
-Most of the time, you only interact with poorman using `poorman start`.
-This section describes how to interact within the environment as defined in .env.
+Most of the time, projects need only call `poorman start`. This section
+describes how to interact within the environment as defined in .env.
 
-To run commands inside your project's environment, run (with `poorman` in the
+To run commands inside a project's environment, run (with `poorman` in the
 `$PATH`):
 
     poorman run COMMAND [ARGS...]
 
-To have your shell source the .env in the same way that poorman does, so that
-variables are available on the command line and to executed programs, you have
+To have a shell source the .env in the same way that poorman does, so that
+variables are available on the command line and to executed programs, there are
 two options.
 
 Option 1, start a new interactive shell session:
@@ -51,9 +51,8 @@ the filepath:
 
     source_dotenv path/to/env
 
-Note that poorman is written in bash, and is only tested with bash. If you are
-using a shell other than bash, verify that option 2 works for your environment
-before proceeding.
+Note that poorman is written in bash, and is only tested with bash. For
+non-bash shells, verify that option 2 is compatible before proceeding.
 
 Both options 1 and 2 will setup the shell environment variables for further
 interaction and execution. Changes to the .env file are not automatically
