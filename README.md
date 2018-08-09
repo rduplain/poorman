@@ -25,8 +25,11 @@ file).
 
 ### Running Inside a Project's Environment
 
-To run interactive commands inside your project's environment, run (with
-`poorman` in the `$PATH`):
+Most of the time, you only interact with poorman using `poorman start`.
+This section describes how to interact within the environment as defined in .env.
+
+To run commands inside your project's environment, run (with `poorman` in the
+`$PATH`):
 
     poorman run COMMAND [ARGS...]
 
