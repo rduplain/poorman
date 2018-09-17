@@ -5,7 +5,7 @@ fixture() {
 
 sort_lines() {
     OLDIFS="$IFS"
-    IFS=$'\n' lines=($(sort <<<"${lines[*]}"))
+    IFS=$'\n' lines=($(sort -n <<<"${lines[*]}"))
     IFS="$OLDIFS"
 }
 

@@ -249,14 +249,14 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
     fixture command_with_space
     run_poorman_filtered_without_timestamps start
     sort_lines
-    assert_equal "line 1" "command2 | foo bar baz" "${lines[0]}"
-    assert_equal "line 2" "command  | foo bar baz" "${lines[1]}"
+    assert_equal "line 1" "command1 | foo bar baz" "${lines[0]}"
+    assert_equal "line 2" "command2 | foo bar baz" "${lines[1]}"
     assert_equal "number of lines" 2 ${#lines[@]}
 }
 
 @test "poorman: start one process containing a space" {
     fixture command_with_space
-    run_poorman start command
+    run_poorman start command1
     assert_equal "line 1" "foo bar baz" "${lines[0]}"
     assert_equal "number of lines" 1 ${#lines[@]}
 }

@@ -1,2 +1,2 @@
-command: ./this\ command foo bar baz
+command1: ./this\ command foo bar baz
 command2: './this command' foo bar baz
