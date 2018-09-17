@@ -7,9 +7,6 @@ matrix:
       env: RECIPE=test
 script:
   - make $RECIPE
-cache:
-  directories:
-  - opt
 notifications:
   email:
     on_success: never
