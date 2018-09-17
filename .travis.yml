@@ -2,9 +2,11 @@ language: ruby
 matrix:
   include:
     - os: linux
+      env: RECIPE=coverage
     - os: osx
+      env: RECIPE=test
 script:
-  - make coverage
+  - make $RECIPE
 cache:
   directories:
   - opt
