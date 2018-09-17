@@ -30,126 +30,135 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
 @test "poorman: basic Procfile" {
     fixture basic
     run_poorman_filtered_without_timestamps start
+    sort_lines
     assert_equal "line 1" "one   | ." "${lines[0]}"
-    assert_equal "line 2" "two   | ." "${lines[1]}"
-    assert_equal "line 3" "three | ." "${lines[2]}"
-    assert_equal "line 4" "one   | .." "${lines[3]}"
-    assert_equal "line 5" "two   | .." "${lines[4]}"
-    assert_equal "line 6" "three | .." "${lines[5]}"
-    assert_equal "line 7" "one   | ..." "${lines[6]}"
-    assert_equal "line 8" "two   | ..." "${lines[7]}"
-    assert_equal "line 9" "three | ..." "${lines[8]}"
+    assert_equal "line 2" "one   | .." "${lines[1]}"
+    assert_equal "line 3" "one   | ..." "${lines[2]}"
+    assert_equal "line 4" "three | ." "${lines[3]}"
+    assert_equal "line 5" "three | .." "${lines[4]}"
+    assert_equal "line 6" "three | ..." "${lines[5]}"
+    assert_equal "line 7" "two   | ." "${lines[6]}"
+    assert_equal "line 8" "two   | .." "${lines[7]}"
+    assert_equal "line 9" "two   | ..." "${lines[8]}"
     assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with .env" {
     fixture basic_env
     run_poorman_filtered_without_timestamps start
+    sort_lines
     assert_equal "line 1" "one   | -" "${lines[0]}"
-    assert_equal "line 2" "two   | -" "${lines[1]}"
-    assert_equal "line 3" "three | -" "${lines[2]}"
-    assert_equal "line 4" "one   | --" "${lines[3]}"
-    assert_equal "line 5" "two   | --" "${lines[4]}"
-    assert_equal "line 6" "three | --" "${lines[5]}"
-    assert_equal "line 7" "one   | ---" "${lines[6]}"
-    assert_equal "line 8" "two   | ---" "${lines[7]}"
-    assert_equal "line 9" "three | ---" "${lines[8]}"
+    assert_equal "line 2" "one   | --" "${lines[1]}"
+    assert_equal "line 3" "one   | ---" "${lines[2]}"
+    assert_equal "line 4" "three | -" "${lines[3]}"
+    assert_equal "line 5" "three | --" "${lines[4]}"
+    assert_equal "line 6" "three | ---" "${lines[5]}"
+    assert_equal "line 7" "two   | -" "${lines[6]}"
+    assert_equal "line 8" "two   | --" "${lines[7]}"
+    assert_equal "line 9" "two   | ---" "${lines[8]}"
     assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with .env containing a shell parameter" {
     fixture basic_env_parameter
     run_poorman_filtered_without_timestamps start
+    sort_lines
     assert_equal "line 1" "one   | x" "${lines[0]}"
-    assert_equal "line 2" "two   | x" "${lines[1]}"
-    assert_equal "line 3" "three | x" "${lines[2]}"
-    assert_equal "line 4" "one   | xx" "${lines[3]}"
-    assert_equal "line 5" "two   | xx" "${lines[4]}"
-    assert_equal "line 6" "three | xx" "${lines[5]}"
-    assert_equal "line 7" "one   | xxx" "${lines[6]}"
-    assert_equal "line 8" "two   | xxx" "${lines[7]}"
-    assert_equal "line 9" "three | xxx" "${lines[8]}"
+    assert_equal "line 2" "one   | xx" "${lines[1]}"
+    assert_equal "line 3" "one   | xxx" "${lines[2]}"
+    assert_equal "line 4" "three | x" "${lines[3]}"
+    assert_equal "line 5" "three | xx" "${lines[4]}"
+    assert_equal "line 6" "three | xxx" "${lines[5]}"
+    assert_equal "line 7" "two   | x" "${lines[6]}"
+    assert_equal "line 8" "two   | xx" "${lines[7]}"
+    assert_equal "line 9" "two   | xxx" "${lines[8]}"
     assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with .env, both with additional empty lines" {
     fixture basic_env_with_empty_lines
     run_poorman_filtered_without_timestamps start
+    sort_lines
     assert_equal "line 1" "one   | -" "${lines[0]}"
-    assert_equal "line 2" "two   | -" "${lines[1]}"
-    assert_equal "line 3" "three | -" "${lines[2]}"
-    assert_equal "line 4" "one   | --" "${lines[3]}"
-    assert_equal "line 5" "two   | --" "${lines[4]}"
-    assert_equal "line 6" "three | --" "${lines[5]}"
-    assert_equal "line 7" "one   | ---" "${lines[6]}"
-    assert_equal "line 8" "two   | ---" "${lines[7]}"
-    assert_equal "line 9" "three | ---" "${lines[8]}"
+    assert_equal "line 2" "one   | --" "${lines[1]}"
+    assert_equal "line 3" "one   | ---" "${lines[2]}"
+    assert_equal "line 4" "three | -" "${lines[3]}"
+    assert_equal "line 5" "three | --" "${lines[4]}"
+    assert_equal "line 6" "three | ---" "${lines[5]}"
+    assert_equal "line 7" "two   | -" "${lines[6]}"
+    assert_equal "line 8" "two   | --" "${lines[7]}"
+    assert_equal "line 9" "two   | ---" "${lines[8]}"
     assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with .env with '=' in a comment" {
     fixture basic_env_with_commented_assignment
     run_poorman_filtered_without_timestamps start
+    sort_lines
     assert_equal "line 1" "one   | v" "${lines[0]}"
-    assert_equal "line 2" "two   | v" "${lines[1]}"
-    assert_equal "line 3" "three | v" "${lines[2]}"
-    assert_equal "line 4" "one   | vv" "${lines[3]}"
-    assert_equal "line 5" "two   | vv" "${lines[4]}"
-    assert_equal "line 6" "three | vv" "${lines[5]}"
-    assert_equal "line 7" "one   | vvv" "${lines[6]}"
-    assert_equal "line 8" "two   | vvv" "${lines[7]}"
-    assert_equal "line 9" "three | vvv" "${lines[8]}"
+    assert_equal "line 2" "one   | vv" "${lines[1]}"
+    assert_equal "line 3" "one   | vvv" "${lines[2]}"
+    assert_equal "line 4" "three | v" "${lines[3]}"
+    assert_equal "line 5" "three | vv" "${lines[4]}"
+    assert_equal "line 6" "three | vvv" "${lines[5]}"
+    assert_equal "line 7" "two   | v" "${lines[6]}"
+    assert_equal "line 8" "two   | vv" "${lines[7]}"
+    assert_equal "line 9" "two   | vvv" "${lines[8]}"
     assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with a comment" {
     fixture basic_with_comment_in_procfile
     run_poorman_filtered_without_timestamps start
+    sort_lines
     assert_equal "line 1" "one   | ." "${lines[0]}"
-    assert_equal "line 2" "two   | ." "${lines[1]}"
-    assert_equal "line 3" "three | ." "${lines[2]}"
-    assert_equal "line 4" "one   | .." "${lines[3]}"
-    assert_equal "line 5" "two   | .." "${lines[4]}"
-    assert_equal "line 6" "three | .." "${lines[5]}"
-    assert_equal "line 7" "one   | ..." "${lines[6]}"
-    assert_equal "line 8" "two   | ..." "${lines[7]}"
-    assert_equal "line 9" "three | ..." "${lines[8]}"
+    assert_equal "line 2" "one   | .." "${lines[1]}"
+    assert_equal "line 3" "one   | ..." "${lines[2]}"
+    assert_equal "line 4" "three | ." "${lines[3]}"
+    assert_equal "line 5" "three | .." "${lines[4]}"
+    assert_equal "line 6" "three | ..." "${lines[5]}"
+    assert_equal "line 7" "two   | ." "${lines[6]}"
+    assert_equal "line 8" "two   | .." "${lines[7]}"
+    assert_equal "line 9" "two   | ..." "${lines[8]}"
     assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile missing newline" {
     fixture basic_missing_newline
     run_poorman_filtered_without_timestamps start
+    sort_lines
     assert_equal "line 1" "one   | ." "${lines[0]}"
-    assert_equal "line 2" "two   | ." "${lines[1]}"
-    assert_equal "line 3" "three | ." "${lines[2]}"
-    assert_equal "line 4" "one   | .." "${lines[3]}"
-    assert_equal "line 5" "two   | .." "${lines[4]}"
-    assert_equal "line 6" "three | .." "${lines[5]}"
-    assert_equal "line 7" "one   | ..." "${lines[6]}"
-    assert_equal "line 8" "two   | ..." "${lines[7]}"
-    assert_equal "line 9" "three | ..." "${lines[8]}"
+    assert_equal "line 2" "one   | .." "${lines[1]}"
+    assert_equal "line 3" "one   | ..." "${lines[2]}"
+    assert_equal "line 4" "three | ." "${lines[3]}"
+    assert_equal "line 5" "three | .." "${lines[4]}"
+    assert_equal "line 6" "three | ..." "${lines[5]}"
+    assert_equal "line 7" "two   | ." "${lines[6]}"
+    assert_equal "line 8" "two   | .." "${lines[7]}"
+    assert_equal "line 9" "two   | ..." "${lines[8]}"
     assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with .env missing newline" {
     fixture basic_env_missing_newline
     run_poorman_filtered_without_timestamps start
+    sort_lines
     assert_equal "line 1" "one   | +" "${lines[0]}"
-    assert_equal "line 2" "two   | +" "${lines[1]}"
-    assert_equal "line 3" "three | +" "${lines[2]}"
-    assert_equal "line 4" "one   | ++" "${lines[3]}"
-    assert_equal "line 5" "two   | ++" "${lines[4]}"
-    assert_equal "line 6" "three | ++" "${lines[5]}"
-    assert_equal "line 7" "one   | +++" "${lines[6]}"
-    assert_equal "line 8" "two   | +++" "${lines[7]}"
-    assert_equal "line 9" "three | +++" "${lines[8]}"
+    assert_equal "line 2" "one   | ++" "${lines[1]}"
+    assert_equal "line 3" "one   | +++" "${lines[2]}"
+    assert_equal "line 4" "three | +" "${lines[3]}"
+    assert_equal "line 5" "three | ++" "${lines[4]}"
+    assert_equal "line 6" "three | +++" "${lines[5]}"
+    assert_equal "line 7" "two   | +" "${lines[6]}"
+    assert_equal "line 8" "two   | ++" "${lines[7]}"
+    assert_equal "line 9" "two   | +++" "${lines[8]}"
     assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: basic Procfile with early failure of one process" {
     fixture basic_with_early_failure
     run_poorman_filtered_without_timestamps start
+    sort_lines
     assert_equal "line 1" "emo    | I am happy." "${lines[0]}"
     assert_equal "line 2" "menace | I fail you." "${lines[1]}"
     assert_equal "number of lines" 2 ${#lines[@]}
@@ -172,6 +181,7 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
 @test "poorman: .env with non-comment hashes" {
     fixture env_with_non_comment_hashes
     run_poorman_filtered_without_timestamps start
+    sort_lines
     assert_equal "line 1" "channel      | #cville" "${lines[0]}"
     assert_equal "line 2" "email-domain | example.com" "${lines[1]}"
     assert_equal "line 3" "quoted       | Why is this # here?" "${lines[2]}"
@@ -204,24 +214,25 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
 @test "poorman: Procfile with commands containing shell parameters" {
     fixture parameter_in_command
     run_poorman_filtered_without_timestamps start
+    sort_lines
     assert_equal "line 1" "one   | x" "${lines[0]}"
-    assert_equal "line 2" "two   | y" "${lines[1]}"
-    assert_equal "line 3" "three | z" "${lines[2]}"
-    assert_equal "line 4" "one   | xx" "${lines[3]}"
-    assert_equal "line 5" "two   | yy" "${lines[4]}"
-    assert_equal "line 6" "three | zz" "${lines[5]}"
-    assert_equal "line 7" "one   | xxx" "${lines[6]}"
-    assert_equal "line 8" "two   | yyy" "${lines[7]}"
-    assert_equal "line 9" "three | zzz" "${lines[8]}"
+    assert_equal "line 2" "one   | xx" "${lines[1]}"
+    assert_equal "line 3" "one   | xxx" "${lines[2]}"
+    assert_equal "line 4" "three | z" "${lines[3]}"
+    assert_equal "line 5" "three | zz" "${lines[4]}"
+    assert_equal "line 6" "three | zzz" "${lines[5]}"
+    assert_equal "line 7" "two   | y" "${lines[6]}"
+    assert_equal "line 8" "two   | yy" "${lines[7]}"
+    assert_equal "line 9" "two   | yyy" "${lines[8]}"
     assert_equal "number of lines" 9 ${#lines[@]}
 }
 
 @test "poorman: start one process containing a shell parameter" {
     fixture parameter_in_command
-    run_poorman start one
-    assert_equal "line 1" "x" "${lines[0]}"
-    assert_equal "line 2" "xx" "${lines[1]}"
-    assert_equal "line 3" "xxx" "${lines[2]}"
+    run_poorman start two
+    assert_equal "line 1" "y" "${lines[0]}"
+    assert_equal "line 2" "yy" "${lines[1]}"
+    assert_equal "line 3" "yyy" "${lines[2]}"
     assert_equal "number of lines" 3 ${#lines[@]}
 }
 
@@ -237,8 +248,9 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
 @test "poorman: Procfile with command containing a space" {
     fixture command_with_space
     run_poorman_filtered_without_timestamps start
-    assert_equal "line 1" "command  | foo bar baz" "${lines[0]}"
-    assert_equal "line 2" "command2 | foo bar baz" "${lines[1]}"
+    sort_lines
+    assert_equal "line 1" "command2 | foo bar baz" "${lines[0]}"
+    assert_equal "line 2" "command  | foo bar baz" "${lines[1]}"
     assert_equal "number of lines" 2 ${#lines[@]}
 }
 
@@ -258,14 +270,14 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
 
 @test "poorman: run a command with a space using backslash" {
     fixture command_with_space
-    run_poorman run ./this\ command 0 foo bar baz
+    run_poorman run ./this\ command foo bar baz
     assert_equal "output" "foo bar baz" "${lines[0]}"
     assert_equal "exit code" 0 $status
 }
 
 @test "poorman: run a command with a space using quotes" {
     fixture command_with_space
-    run_poorman run './this command' 0 foo bar baz
+    run_poorman run './this command' foo bar baz
     assert_equal "output" "foo bar baz" "${lines[0]}"
     assert_equal "exit code" 0 $status
 }

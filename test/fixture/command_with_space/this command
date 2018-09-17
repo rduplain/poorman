@@ -1,7 +1,5 @@
 #!/bin/bash
 # Echo arguments.
 
-sleep $1
-shift
-echo $*
-sleep 0.3
+echo "$@"
+sleep 0.1

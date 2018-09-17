@@ -1,3 +1,3 @@
-channel: ./run_then_wait 0.1 echo $CHANNEL
-email-domain: ./run_then_wait 0.2 echo $EMAIL_DOMAIN
-quoted: ./run_then_exit 0.3 echo $QUOTED
+channel: ./run_then_wait echo $CHANNEL
+email-domain: ./run_then_wait echo $EMAIL_DOMAIN
+quoted: ./run_then_exit echo $QUOTED

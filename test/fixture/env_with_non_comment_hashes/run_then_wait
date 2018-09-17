@@ -1,15 +1,10 @@
 #!/bin/bash
-# Sleep for $1, run remaining $@, then wait indefinitely.
+# Run given command, then wait indefinitely.
 
 set -e
-
-delay=$1
-shift
-
-sleep $delay
 
 if [ $# -gt 0 ]; then
     env "$@"
 fi
 
-sleep 0.5
+sleep 2

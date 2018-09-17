@@ -2,3 +2,4 @@
 # Be uninteresting.
 
 echo "You have the wrong command."
+sleep 2

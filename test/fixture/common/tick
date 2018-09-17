@@ -1,30 +1,15 @@
 #!/usr/bin/env bash
-# tick: echo . .. ... with an initial delay, change . with $DOT.
-#
-# This allows Procfile testing with predictable output, assuming that shell
-# interpreter overhead is completed within $INTERVAL seconds (defaults to
-# 0.25). Optionally pass in an argument between 1 and 9 to configure starting
-# sleep value, e.g. `tick 1` (fastest), `tick 2`, or `tick 3` (slowest).
+# tick: echo . .. ..., wait indefinitely unless --exit given; change . with $DOT.
 
-start=${1:-1}
 dot=${DOT:-.}
-interval=${INTERVAL:-0.25}
 
-if [ $start -lt 1 ] || [ $start -gt 3 ]; then
-    # Narrow configuration to avoid non-integer arithmetic.
-    echo 'usage: tick [NUM]' >&2
-    echo 'NUM must be between 1 and 3, inclusive.' >&2
-    exit 1
+echo $dot
+echo $dot$dot
+echo $dot$dot$dot
+
+if [ "$1" = "--exit" ]; then
+    sleep 0.1
+    exit
+else
+    sleep 2
 fi
-
-case $start in
-    1) sleep 0.10;;
-    2) sleep 0.15;;
-    3) sleep 0.20;;
-    *) sleep 0.10;;
-esac
-
-sleep $interval; echo $dot
-sleep $interval; echo $dot$dot
-sleep $interval; echo $dot$dot$dot
-sleep $interval

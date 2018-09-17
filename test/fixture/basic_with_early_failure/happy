@@ -2,7 +2,7 @@
 # Harmless program with predictably delayed emotions.
 
 echo I am happy.
-sleep 0.3
+sleep 3
 echo I am sad.
-sleep 0.3
+sleep 3
 echo I am still sad.

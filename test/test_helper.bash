@@ -3,6 +3,12 @@ fixture() {
     cd $FIXTURE_ROOT
 }
 
+sort_lines() {
+    OLDIFS="$IFS"
+    IFS=$'\n' lines=($(sort <<<"${lines[*]}"))
+    IFS="$OLDIFS"
+}
+
 assert_equal() {
     local test=$1
     local expected=$2
