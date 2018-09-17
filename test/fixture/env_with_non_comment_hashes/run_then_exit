@@ -1,5 +1,5 @@
 #!/bin/bash
 # Sleep for a bit, run given argument, then exit.
 
-sleep 0.1
+sleep 1
 env "$@"
