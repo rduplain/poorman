@@ -1,13 +1,2 @@
-.#*
-*~
-\#*
-/.coverage
 /coverage/
-.DS_Store
-/.emacs*
-*.html
-*.log
-__MACOSX
 /opt/
-*.pyc
-*.sw*
