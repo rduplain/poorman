@@ -1,0 +1,5 @@
+# The entire repo is the poorman program with supporting files.
+.* linguist-vendored=true
+* linguist-vendored=true
+poorman linguist-vendored=false
+test/* linguist-vendored=true
