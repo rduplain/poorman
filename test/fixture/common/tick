@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
-# tick: echo . .. ..., wait indefinitely unless --exit given; change . with $DOT.
+# tick: echo . .. ..., coordinating over fifo; change . with $DOT.
+
+set -e
+
+common="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. $common/fifo.bash source
+
+fifo="$1"
+shift
+
+wait_for_fifo "$fifo"
 
 dot=${DOT:-.}
 
-echo $dot
-echo $dot$dot
-echo $dot$dot$dot
+echo $dot         ; ping_fifo "$fifo"
+echo $dot$dot     ; ping_fifo "$fifo"
+echo $dot$dot$dot ; ping_fifo "$fifo"
 
-if [ "$1" = "--exit" ]; then
-    sleep 1
-    exit
-else
-    sleep 2
-fi
+wait_for_rm_fifo "$fifo"

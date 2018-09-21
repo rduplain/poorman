@@ -1,0 +1,3 @@
+one: ../common/tick /dev/null
+two: env DOT=y ../common/tick /dev/null
+three: env DOT=$__Z ../common/tick /dev/null

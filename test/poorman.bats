@@ -228,7 +228,7 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
 }
 
 @test "poorman: start one process containing a shell parameter" {
-    fixture parameter_in_command
+    fixture parameter_in_command_no_fifo
     run_poorman start two
     assert_equal "line 1" "y" "${lines[0]}"
     assert_equal "line 2" "yy" "${lines[1]}"
@@ -237,7 +237,7 @@ USAGE_LINE="usage: poorman start [PROCESS]        # Start processes."
 }
 
 @test "poorman: start one process containing another shell parameter" {
-    fixture parameter_in_command
+    fixture parameter_in_command_no_fifo
     run_poorman start three
     assert_equal "line 1" "z" "${lines[0]}"
     assert_equal "line 2" "zz" "${lines[1]}"

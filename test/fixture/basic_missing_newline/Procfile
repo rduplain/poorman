@@ -1,3 +1,4 @@
-one: ../common/tick
-two: ../common/tick
-three: ../common/tick --exit
+fifo: ../common/fifo.bash $$.fifo 9
+one: ../common/tick $$.fifo
+two: ../common/tick $$.fifo
+three: ../common/tick $$.fifo

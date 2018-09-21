@@ -1,3 +1,4 @@
-one: ../common/tick
-two: env DOT=y ../common/tick --exit
-three: env DOT=$__Z ../common/tick --exit
+fifo: ../common/fifo.bash $$.fifo 9
+one: ../common/tick $$.fifo
+two: env DOT=y ../common/tick $$.fifo
+three: env DOT=$__Z ../common/tick $$.fifo
