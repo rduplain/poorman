@@ -293,9 +293,9 @@ parse_procfile_line() {
     # At some point, poorman needs to parse the line from the Procfile exactly
     # as the shell would parse it. The best parser for this is the shell itself
     # (e.g. `set -- "$COMMAND"`), but caution must be taken in order to avoid
-    # implicitly processing the string. Echoing the string will lose quoting
-    # and escapes. Parsing the string into an argument array here will hit
-    # limitations in what can be exported, since the name of the command
+    # implicitly processing the string otherwise. Echoing the string will lose
+    # quoting and escapes. Parsing the string into an argument array here will
+    # hit limitations in what can be exported, since the name of the command
     # variable is taken as an argument. Therefore, this function passes the
     # command as a single opaque string, to be parsed via `set` just before
     # `exec` is to be called by poorman.
