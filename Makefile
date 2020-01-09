@@ -13,7 +13,7 @@ coverage: bashcov-command bats-command
 
 bashcov-command: gem-command
 	@which bashcov > /dev/null || \
-		gem install --no-ri --no-rdoc \
+		gem install --no-document \
 			simplecov:0.12.0 \
 			coveralls:0.8.19 \
 			bashcov:1.3.1
