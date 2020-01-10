@@ -1,2 +1,4 @@
 /coverage/
+/.Makefile.d/
 /opt/
+/.reqd/
