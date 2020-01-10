@@ -1,3 +1,4 @@
+require 'simplecov'
 require 'coveralls'
 
 class AllButFilepathFilter < SimpleCov::Filter
@@ -8,12 +9,10 @@ class AllButFilepathFilter < SimpleCov::Filter
   end
 end
 
-SimpleCov.start do
-  formatter = SimpleCov::Formatter::MultiFormatter.new([
-    Coveralls::SimpleCov::Formatter,
-    SimpleCov::Formatter::HTMLFormatter,
-  ])
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  Coveralls::SimpleCov::Formatter,
+  SimpleCov::Formatter::HTMLFormatter,
+])
 
-  add_group 'poorman', 'poorman$'
-  add_filter AllButFilepathFilter.new('/poorman')
-end
+SimpleCov.add_group 'poorman', 'poorman$'
+SimpleCov.add_filter AllButFilepathFilter.new('/poorman')
