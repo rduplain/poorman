@@ -1,4 +1,6 @@
 /coverage/
+/Gemfile
+*.lock
 /.Makefile.d/
 /opt/
 /.reqd/
