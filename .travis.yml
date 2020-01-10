@@ -7,6 +7,10 @@ matrix:
       env: RECIPE=test
 script:
   - make $RECIPE
+cache:
+  directories:
+    - .Makefile.d
+    - ./.reqd/opt
 notifications:
   email:
     on_success: never
