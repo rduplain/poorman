@@ -11,7 +11,7 @@ systems. Its only dependency is the bash shell (GNU bash 3.2.0+). It is
 designed to run all processes specified in the Procfile in the current
 directory, and exit all processes when any such process exits.
 
-See [Profile documentation](https://devcenter.heroku.com/articles/procfile).
+See [Procfile documentation](https://devcenter.heroku.com/articles/procfile).
 Either check static Procfile and .env files into version control, or build
 these files dynamically with a build system.
 
